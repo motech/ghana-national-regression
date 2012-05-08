@@ -13,7 +13,6 @@
     <context:component-scan base-package="org.motechproject.ghana.national.functional"/>
     <context:component-scan base-package=" org.motechproject.deliverytools.outboundendpoint"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
-    <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
 
     <import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
 
