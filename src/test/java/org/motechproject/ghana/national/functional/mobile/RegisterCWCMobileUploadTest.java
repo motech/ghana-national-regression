@@ -161,7 +161,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPageAfterEdit);
 
 
-        assertThat(mobileMidwifeEnrollmentPage.status(),is("INACTIVE"));
+        assertThat(mobileMidwifeEnrollmentPage.status(), is("INACTIVE"));
     }
 
     @Test
@@ -178,8 +178,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA, patient.dateOfBirth())
-        );
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA, patient.dateOfBirth()));
     }
 
     @Test
@@ -200,7 +199,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldCreateScheduleFromAppropriateMilestoneIfHistoryIsProvided(){
+    public void shouldCreateScheduleFromAppropriateMilestoneIfHistoryIsProvided() {
         String staffId = staffGenerator.createStaff(browser, homePage);
         LocalDate dateOfBirth = DateUtil.newDate(2012, 4, 3);
         TestPatient patient = TestPatient.with("name-new", staffId).dateOfBirth(dateOfBirth).patientType(CHILD_UNDER_FIVE);

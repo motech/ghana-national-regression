@@ -158,6 +158,26 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>generate-test-resources</phase>
+                        <configuration>
+                            <target>
+                                <zip basedir="src/test/resources"
+                                     destfile="target/lib/ghana-national-web-1.0-SNAPSHOT.war" update="true"
+                                     includes="WEB-INF/classes/applicationContext.xml">
+                                </zip>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.4</version>
