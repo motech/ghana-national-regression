@@ -119,13 +119,13 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception())
         );
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate)
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION.getName(), registrationDate)
         );
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception())
         );
 
         patientEditPage = toPatientEditPage(testPatient);
@@ -187,13 +187,13 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception())
         );
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate)
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION.getName(), registrationDate)
         );
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception())
         );
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
 
@@ -246,11 +246,11 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION, ttVaccinationDate, TT2.getScheduleMilestoneName()), TT2.getScheduleMilestoneName(),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, TT_VACCINATION));
+        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(TT_VACCINATION.getName(), ttVaccinationDate, TT2.getScheduleMilestoneName()), TT2.getScheduleMilestoneName(),
+                scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, TT_VACCINATION.getName()));
 
-        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE, iptVaccinationDate, SP2.milestone()), SP2.milestone(),
-                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, ANC_IPT_VACCINE));
+        ScheduleHelper.assertAlertDate(expectedFirstAlertDate(ANC_IPT_VACCINE.getName(), iptVaccinationDate, SP2.milestone()), SP2.milestone(),
+                scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, ANC_IPT_VACCINE.getName()));
     }
 
     @Test
@@ -277,9 +277,9 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception()));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION.getName(), registrationDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception()));
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
 

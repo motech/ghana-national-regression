@@ -178,7 +178,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA, patient.dateOfBirth()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA.getName(), patient.dateOfBirth()));
     }
 
     @Test
@@ -195,7 +195,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
-        assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_PENTA));
+        assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_PENTA.getName()));
     }
 
     @Test
@@ -214,9 +214,9 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA).getAlertAsLocalDate(), expectedAlertDateFor(CWC_PENTA, testCWCEnrollment.getLastPentaDate(), "Penta2"));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE).getAlertAsLocalDate(), expectedAlertDateFor(CWC_IPT_VACCINE, testCWCEnrollment.getLastIPTiDate(), "IPTi2"));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS).getAlertAsLocalDate(), expectedAlertDateFor(CWC_OPV_OTHERS, testCWCEnrollment.getLastOPVDate(), "OPV2"));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), expectedAlertDateFor(CWC_PENTA.getName(), testCWCEnrollment.getLastPentaDate(), "Penta2"));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedAlertDateFor(CWC_IPT_VACCINE.getName(), testCWCEnrollment.getLastIPTiDate(), "IPTi2"));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), expectedAlertDateFor(CWC_OPV_OTHERS.getName(), testCWCEnrollment.getLastOPVDate(), "OPV2"));
     }
 
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
