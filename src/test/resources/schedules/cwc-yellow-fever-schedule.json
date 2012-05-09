@@ -1,0 +1,29 @@
+{
+    "name" : "CWCYellowFeverVaccine",
+    "milestones" : [
+        {
+            "name" : "YF",
+            "scheduleWindows" : {
+                "earliest" : ["9 Months"],
+                "due" : ["9 Months", "4 Weeks"],
+                "late" : ["5 Years"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Week"],
+                    "count" : "1",
+                    "offset" : ["-7 Days"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Week"]
+                }
+            ]
+        }
+
+    ]
+}

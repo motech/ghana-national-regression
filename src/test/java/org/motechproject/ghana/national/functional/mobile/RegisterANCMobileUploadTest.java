@@ -43,7 +43,7 @@ import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
+public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Autowired
     ScheduleTracker scheduleTracker;
@@ -139,8 +139,8 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT",  new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
-                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
         openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
@@ -200,9 +200,9 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
         String encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
-        new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT",  new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
-                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+                new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
         openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
@@ -220,7 +220,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
     }
 
     @Test(enabled = false)
-    public void shouldCreateANCWithScheduleForIPTAndTTwithNextMilestones_IfThePatientHasAVaccineHistoryInActivePregnancyPeriod(){
+    public void shouldCreateANCWithScheduleForIPTAndTTwithNextMilestones_IfThePatientHasAVaccineHistoryInActivePregnancyPeriod() {
         DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
@@ -277,14 +277,9 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
         ancEnrollmentPage.displaying(ancEnrollment);
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception())
-        );
-
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate)
-        );
-
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception())
-        );
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_DELIVERY, pregnancyIn12thWeekOfPregnancy.dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION, registrationDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE, pregnancyIn12thWeekOfPregnancy.dateOfConception()));
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
 
@@ -293,7 +288,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
                 new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
-                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
         openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
@@ -381,7 +376,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest{
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
                 new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
-                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
         openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));

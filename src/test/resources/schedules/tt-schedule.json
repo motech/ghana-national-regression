@@ -1,0 +1,114 @@
+{
+    "name" : "TTVaccine",
+    "milestones" : [
+        {
+            "name" : "TT1",
+            "scheduleWindows" : {
+                "earliest":[],
+                "due":["1 Week"],
+                "late":["4 Weeks"],
+                "max":[]
+            },
+            "alerts" : [
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Weeks"]
+                }
+            ]
+        },
+        {
+            "name" : "TT2",
+            "scheduleWindows" : {
+                "earliest" : ["4 Weeks"],
+                "due" : ["5 Weeks"],
+                "late" : ["8 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" :["1 Weeks"],
+                    "count" : "1",
+                    "offset" : ["-1 Weeks"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Weeks"]
+                }
+            ]
+        },
+        {
+            "name" : "TT3",
+            "scheduleWindows" : {
+                "earliest" : ["6 Months"],
+                "due" : ["6 Months", "10 Days"],
+                "late" : ["6 Months", "10 Days", "3 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Weeks"],
+                    "count" : "1",
+                    "offset" : ["-1 Weeks"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Weeks"]
+                }
+            ]
+        },
+        {
+            "name" : "TT4",
+            "scheduleWindows" : {
+                "earliest" : ["12 Months"],
+                "due" : ["12 Months", "10 Days"],
+                "late" : ["12 Months", "10 Days", "3 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Weeks"],
+                    "count" : "1",
+                    "offset" : ["-1 Weeks"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Weeks"]
+                }
+            ]
+        },
+        {
+            "name" : "TT5",
+            "scheduleWindows" : {
+                "earliest" : ["12 Months"],
+                "due" : ["12 Months", "10 Days"],
+                "late" : ["12 Months", "10 Days", "3 Weeks"],
+                "max" : []
+            },
+            "alerts" : [
+                {
+                    "window" : "due",
+                    "interval" : ["1 Weeks"],
+                    "count" : "1",
+                    "offset" : ["-1 Weeks"]
+                },
+                {
+                    "window" : "late",
+                    "interval" : ["1 Weeks"],
+                    "count" : "3",
+                    "offset" : ["-1 Weeks"]
+                }
+            ]
+        }
+    ]
+}
