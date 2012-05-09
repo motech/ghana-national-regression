@@ -18,7 +18,6 @@ import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.util.DateUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -31,15 +30,9 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
-    private DataGenerator dataGenerator;
-
-    @BeforeMethod
-    public void setUp() {
-        dataGenerator = new DataGenerator();
-    }
-
     @Test
     public void shouldUploadPregnancyTerminationFormSuccessfully() throws Exception {
+        DataGenerator dataGenerator = new DataGenerator();
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
         String patientFirstName = "patient first name" + dataGenerator.randomString(5);
@@ -78,8 +71,8 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
         String encounterId = openMRSPatientPage.chooseEncounter("PREGTERMVISIT");
-
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("MATERNAL DEATH","false"),
                 new OpenMRSObservationVO("POST-ABORTION FP COUNSELING","true"),

@@ -28,6 +28,7 @@ public class OpenMRSBrowser implements DisposableBean {
     }
 
     public OpenMRSPatientPage toOpenMRSPatientPage(String openMrsId) {
+        openMRSHomePage();
         webDriver.get(applicationURLs.forOpenMRSPatientPage(openMrsId));
         return new OpenMRSPatientPage(webDriver);
     }
