@@ -1,17 +1,22 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.apache.commons.collections.MapUtils;
+import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.*;
+import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
+import org.motechproject.ghana.national.functional.helper.ScheduleHelper;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
+import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -24,6 +29,8 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNull;
 
@@ -32,6 +39,9 @@ import static org.testng.AssertJUnit.assertNull;
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
+    @Autowired
+    private ScheduleTracker scheduleTracker;
+    
     DataGenerator dataGenerator;
 
     public RegisterClientFromMobileTest() {
@@ -132,18 +142,17 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
         editPage = browser.toPatientEditPage(searchPatientPage, patient);
-        String motechId = editPage.motechId();
         MobileMidwifeEnrollmentPage enrollmentPage = browser.toMobileMidwifeEnrollmentForm(editPage);
 
         assertEquals(mmEnrollmentDetails.patientId(patientId), enrollmentPage.details());
 
-        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
         String encounterId = openMRSPatientPage.chooseEncounter("PATIENTREGVISIT");
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
 
         openMRSEncounterPage.displaying(Collections.<OpenMRSObservationVO>emptyList());
 
-        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
         encounterId = openMRSPatientPage.chooseEncounter("PREGREGVISIT");
         openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
@@ -152,7 +161,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
         ));
 
-        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(motechId));
+        openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
         encounterId = openMRSPatientPage.chooseEncounter("ANCREGVISIT");
 
         openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
@@ -164,6 +173,41 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
                 new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
         ));
+    }
+    
+    @Test
+    public void shouldCreatePatientWithANCHistoryAndVerifySchedules() {
+
+        LocalDate registrationDate = today();
+        LocalDate estimatedDateOfDelivery = registrationDate.plusMonths(4);
+        LocalDate lastIPTDate = registrationDate.minusWeeks(6);
+        LocalDate lastTTDate = registrationDate.minusWeeks(8);
+
+        String staffId = staffGenerator.createStaff(browser, homePage);
+
+        TestPatient patient = TestPatient.with("ANC History Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false).registrationDate(registrationDate);
+
+        TestANCEnrollment ancEnrollmentDetails = TestANCEnrollment.create().withEstimatedDateOfDelivery(estimatedDateOfDelivery)
+                                                    .withLastIPT("1").withLastIPTDate(lastIPTDate)
+                                                    .withLastTT("1").withLastTTDate(lastTTDate);
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).consent(false);
+        TestClientRegistration<TestANCEnrollment> testClientRegistration = new TestClientRegistration<TestANCEnrollment>(patient, ancEnrollmentDetails, mmEnrollmentDetails);
+
+        mobile.upload(MobileForm.registerClientForm(), testClientRegistration.withProgramEnrollmentThroughMobile());
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+
+        String patientId = editPage.motechId();
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(ANC_DELIVERY.getName(), Pregnancy.basedOnDeliveryDate(estimatedDateOfDelivery).dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
     }
 
     @Test
@@ -224,5 +268,72 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE","1.0")
         ));
     }
+    
+    @Test
+    public void shouldCreatePatientWithCWCPentaAndIPTiHistoryAndVerifySchedules() {
+        String staffId = staffGenerator.createStaff(browser, homePage);
 
+        String motherMotechId = patientGenerator.createPatient(browser, homePage, staffId);
+
+        LocalDate registrationDate = today();
+        LocalDate birthDate = registrationDate.minusMonths(2);
+
+        TestPatient patient = TestPatient.with("CWC History Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
+                motherMotechId(motherMotechId).registrationDate(registrationDate).dateOfBirth(birthDate);
+
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId()).consent(false);
+
+        TestCWCEnrollment cwcEnrollmentDetails = TestCWCEnrollment.create()
+                .withLastPenta("1").withLastPentaDate(birthDate.plusWeeks(4))
+                .withLastIPTi("1").withLastIPTiDate(birthDate.plusWeeks(3));
+
+        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
+
+        Map<String, String> data = testClientRegistration.withProgramEnrollmentThroughMobile();
+        mobile.upload(MobileForm.registerClientForm(), data);
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
+        
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_PENTA.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
+    }
+
+    @Test
+    public void shouldCreatePatientWithCWCOPVHistoryAndVerifySchedules() {
+        String staffId = staffGenerator.createStaff(browser, homePage);
+
+        String motherMotechId = patientGenerator.createPatient(browser, homePage, staffId);
+
+        LocalDate registrationDate = today();
+        LocalDate birthDate = registrationDate.minusWeeks(5);
+
+        TestPatient patient = TestPatient.with("CWC History Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
+                motherMotechId(motherMotechId).registrationDate(registrationDate).dateOfBirth(birthDate);
+
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId()).consent(false);
+
+        TestCWCEnrollment cwcEnrollmentDetails = TestCWCEnrollment.create()
+                .withLastOPV("0").withLastOPVDate(birthDate.plusDays(1));
+
+        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
+
+        Map<String, String> data = testClientRegistration.withProgramEnrollmentThroughMobile();
+        mobile.upload(MobileForm.registerClientForm(), data);
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
+
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), birthDate));
+    }
 }
