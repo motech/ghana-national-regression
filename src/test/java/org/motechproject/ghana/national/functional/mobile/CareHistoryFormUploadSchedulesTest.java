@@ -101,10 +101,9 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
         TestPatient patient = TestPatient.with(dataGenerator.randomString(8), staffId).patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).dateOfBirth(dateOfBirth);
         String patientId = patientGenerator.createPatient(patient, browser, homePage);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        LocalDate registrationDate = dateOfBirth;
 
         TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.createWithoutHistory()
-                .withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate)
+                .withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(dateOfBirth)
                 .withAddHistory(true).withLastOPV("1").withLastOPVDate(dateOfBirth);
 
         mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());

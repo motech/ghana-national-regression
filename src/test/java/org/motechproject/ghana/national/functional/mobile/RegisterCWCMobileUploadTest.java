@@ -209,14 +209,16 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
         TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
                 .withRegistrationDate(registrationDate).withAddHistory(true).withAddCareHistory(asList(CwcCareHistory.PENTA,CwcCareHistory.IPTI,CwcCareHistory.OPV))
-                .withLastIPTi("1").withLastIPTiDate(DateUtil.newDate(2012, 4, 16)).withLastPenta("1").withLastPentaDate(DateUtil.newDate(2012, 4, 16)).withLastOPV("1").withLastOPVDate(DateUtil.newDate(2012, 4, 16));
+                .withLastIPTi("1").withLastIPTiDate(DateUtil.newDate(2012, 4, 16))
+                .withLastPenta("1").withLastPentaDate(DateUtil.newDate(2012, 4, 16))
+                .withLastOPV("1").withLastOPVDate(DateUtil.newDate(2012, 4, 16));
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), expectedAlertDateFor(CWC_PENTA.getName(), testCWCEnrollment.getLastPentaDate(), "Penta2"));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedAlertDateFor(CWC_IPT_VACCINE.getName(), testCWCEnrollment.getLastIPTiDate(), "IPTi2"));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), expectedAlertDateFor(CWC_OPV_OTHERS.getName(), testCWCEnrollment.getLastOPVDate(), "OPV2"));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
     }
 
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {

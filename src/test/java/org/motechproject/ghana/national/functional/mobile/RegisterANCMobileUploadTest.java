@@ -39,6 +39,8 @@ import static org.hamcrest.Matchers.*;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.IPTDose.SP2;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT2;
+import static org.motechproject.util.DateUtil.newDate;
+import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -156,6 +158,42 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
         ));
 
+    }
+
+    @Test
+    public void shouldCreateANCForAPatientWithHistory() {
+        DataGenerator dataGenerator = new DataGenerator();
+        String staffId = staffGenerator.createStaff(browser, homePage);
+
+        TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
+                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
+                .estimatedDateOfBirth(false);
+
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
+
+        LocalDate estimatedDateOfDelivery = newDate(today().plusWeeks(4).toDate());
+        LocalDate lastTTDate = today().minusWeeks(20);
+        LocalDate lastIPTDate = today().minusWeeks(20);
+        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId)
+                .withEstimatedDateOfDelivery(estimatedDateOfDelivery)
+                .withRegistrationDate(today())
+                .withLastTT("1").withLastTTDate(lastTTDate)
+                .withLastIPT("1").withLastIPTDate(lastIPTDate);
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+
+        assertEquals(1, response.getSuccessCount());
+
+        PatientEditPage patientEditPage = toPatientEditPage(testPatient);
+        ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
+        ancEnrollmentPage.displaying(ancEnrollment);
+
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+
+        LocalDate conceptionDate = Pregnancy.basedOnDeliveryDate(estimatedDateOfDelivery).dateOfConception();
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(ANC_DELIVERY.getName(),conceptionDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
     }
 
 
@@ -310,7 +348,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate, String milestoneName) {
-        return scheduleTracker.firstAlert(scheduleName, referenceDate, milestoneName);
+        return scheduleTracker.alertFor(scheduleName, referenceDate, milestoneName);
     }
 
     @Test
