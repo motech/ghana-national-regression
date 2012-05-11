@@ -3,7 +3,9 @@ package org.motechproject.ghana.national.functional.mobile;
 import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
@@ -22,6 +24,7 @@ import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEn
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
+import org.motechproject.ghana.national.service.IPTiDose;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +57,8 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     @Autowired
     ScheduleTracker scheduleTracker;
 
+    @Autowired
+    DataGenerator dataGenerator;
     @Test
     public void shouldCheckForAllMandatoryDetails() throws Exception {
         final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerCWCForm(), MapUtils.EMPTY_MAP);
@@ -91,7 +96,6 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldRegisterAPatientForCWCAndMobileMidwifeProgramUsingMobileDeviceAndSearchForItInWeb() {
-        DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
 
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
@@ -137,7 +141,6 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldUnRegisterExistingMobileMidWifeWhileCWCRegistration() {
-        DataGenerator dataGenerator = new DataGenerator();
 
         String staffId = staffGenerator.createStaff(browser, homePage);
 
@@ -221,12 +224,34 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
     }
 
-    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
-        return scheduleTracker.firstAlert(scheduleName, referenceDate);
+    @Test
+    public void shouldCreateSchedulesForPatientTypeOtherWithCWCHistory(){
+        LocalDate registrationDate = today();
+        LocalDate dateOfBirth = registrationDate.minusYears(2).minusWeeks(25);
+
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        TestPatient testPatient = TestPatient.with("OtherPatient "+dataGenerator.randomString(4),staffId)
+                .registrationDate(registrationDate).patientType(TestPatient.PATIENT_TYPE.OTHER).dateOfBirth(dateOfBirth);
+        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
+
+        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId).withMotechPatientId(patientId)
+                .withRegistrationDate(testPatient.getRegistrationDate())
+                .withLastIPTi("1").withLastIPTiDate(dateOfBirth.plusDays(10))
+                .withLastOPV("1").withLastOPVDate(dateOfBirth.plusDays(2));
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+
+        assertEquals(1,response.getSuccessCount());
+
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), Utility.getNextOf(IPTiDose.byValue(Integer.parseInt(testCWCEnrollment.getLastIPTi()))).milestoneName(),
+                today().plusWeeks(1), IPTiDose.IPTi2.milestoneName());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), Utility.getNextOf(OPVDose.byValue(testCWCEnrollment.getLastOPV())).name(),
+                today().plusWeeks(1), OPVDose.OPV_2.name());
     }
 
-    private LocalDate expectedAlertDateFor(String scheduleName, LocalDate referenceDate, String milestoneName) {
-        return scheduleTracker.alertFor(scheduleName, referenceDate, milestoneName);
+    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
+        return scheduleTracker.firstAlert(scheduleName, referenceDate);
     }
 
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {

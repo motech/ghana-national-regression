@@ -3,6 +3,9 @@ package org.motechproject.ghana.national.functional.mobile;
 import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
+import org.motechproject.ghana.national.configuration.ScheduleNames;
+import org.motechproject.ghana.national.domain.IPTDose;
+import org.motechproject.ghana.national.domain.TTVaccineDosage;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
@@ -20,6 +23,7 @@ import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEn
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +53,10 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Autowired
     ScheduleTracker scheduleTracker;
-
     @Autowired
     private OpenMRSDB openMRSDB;
+    @Autowired
+    DataGenerator dataGenerator;
 
     @Test
     public void shouldCheckForMandatoryFields() {
@@ -94,7 +99,6 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldCreateANCWithoutHistoryForAPatientWithMobileDeviceAndSearchForItInWeb() throws ParseException {
-        DataGenerator dataGenerator = new DataGenerator();
 
         String staffId = staffGenerator.createStaff(browser, homePage);
 
@@ -162,7 +166,6 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldCreateANCForAPatientWithHistory() {
-        DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
 
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
@@ -199,7 +202,6 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldCreateANCWithScheduleForIPTAndTT_IfThePatientHasAVaccineHistoryBeforeTheRecentPregnancyConception() throws ParseException {
-        DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
@@ -259,7 +261,6 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test(enabled = false)
     public void shouldCreateANCWithScheduleForIPTAndTTwithNextMilestones_IfThePatientHasAVaccineHistoryInActivePregnancyPeriod() {
-        DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
@@ -293,7 +294,6 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldCreateANCWithScheduleForOnlyIPTGivenTTHistoryForAPatient() throws ParseException {
-        DataGenerator dataGenerator = new DataGenerator();
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
                 .patientType(TestPatient.PATIENT_TYPE.OTHER)
@@ -343,17 +343,8 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ));
     }
 
-    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
-        return scheduleTracker.firstAlert(scheduleName, referenceDate);
-    }
-
-    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate, String milestoneName) {
-        return scheduleTracker.alertFor(scheduleName, referenceDate, milestoneName);
-    }
-
     @Test
     public void shouldUnRegisterExistingMobileMidWifeWhileANCRegistration() {
-        DataGenerator dataGenerator = new DataGenerator();
 
         String staffId = staffGenerator.createStaff(browser, homePage);
 
@@ -381,7 +372,6 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
     public void shouldCreateANCForAPatientWithMobileDeviceAndSearchForItInWeb() {
-        DataGenerator dataGenerator = new DataGenerator();
 
         String staffId = staffGenerator.createStaff(browser, homePage);
 
@@ -431,10 +421,46 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ));
     }
 
+    @Test
+    public void shouldCreateSchedulesForPatientTypeOtherWithANCHistory(){
+        LocalDate registrationDate = today();
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        TestPatient testPatient = TestPatient.with("OtherPatient "+dataGenerator.randomString(4),staffId)
+                .registrationDate(registrationDate).patientType(TestPatient.PATIENT_TYPE.OTHER);
+        String patientId = patientGenerator.createPatient(testPatient,browser,homePage);
+
+        LocalDate estimatedDateOfDelivery = registrationDate.plusMonths(5);
+        LocalDate dateOfConception= Pregnancy.basedOnDeliveryDate(estimatedDateOfDelivery).dateOfConception();
+        TestANCEnrollment testANCEnrollment = TestANCEnrollment.create().withStaffId(staffId).withMotechPatientId(patientId)
+                .withRegistrationDate(testPatient.getRegistrationDate())
+                .withEstimatedDateOfDelivery(estimatedDateOfDelivery)
+                .withLastIPT("1").withLastIPTDate(dateOfConception.plusDays(5))
+                .withLastTT("1").withLastTTDate(dateOfConception.plusDays(10));
+
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), testANCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+
+        assertEquals(1,response.getSuccessCount());
+
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION.getName()).getAlertAsLocalDate(), Utility.getNextOf(TTVaccineDosage.byValue(Integer.parseInt(testANCEnrollment.lastTT()))).getScheduleMilestoneName(),
+                today().plusWeeks(1),TTVaccineDosage.TT2.getScheduleMilestoneName());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,ScheduleNames.ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), Utility.getNextOf(IPTDose.byValue(testANCEnrollment.lastIPT())).name(),
+                today().plusWeeks(1),IPTDose.SP2.name());
+    }
+
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(testPatient.firstName());
         searchPatientPage.displaying(testPatient);
         return browser.toPatientEditPage(searchPatientPage, testPatient);
     }
+
+    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
+        return scheduleTracker.firstAlert(scheduleName, referenceDate);
+    }
+
+    private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate, String milestoneName) {
+        return scheduleTracker.alertFor(scheduleName, referenceDate, milestoneName);
+    }
+
 }

@@ -3,7 +3,6 @@ package org.motechproject.ghana.national.functional.mobile;
 import junit.framework.Assert;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
-import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
@@ -20,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
+
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
@@ -44,8 +45,8 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
 
         mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception()));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.TT_VACCINATION.getName(), registrationDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION.getName(), registrationDate));
 
         final LocalDate dateAfterConception = pregnancyIn12thWeekOfPregnancy.dateOfConception().plusWeeks(3);
 
@@ -56,8 +57,8 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
         mobile.upload(MobileForm.careHistoryForm(), careHistory.forMobile());
 
         // schedule dates should not change
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception()));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ScheduleNames.TT_VACCINATION.getName(), registrationDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(ANC_IPT_VACCINE.getName(), pregnancyIn12thWeekOfPregnancy.dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(TT_VACCINATION.getName(), registrationDate));
     }
 
     @Test
@@ -72,8 +73,8 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
 
         mobile.upload(MobileForm.careHistoryForm(), careHistory.forMobile());
 
-        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.ANC_IPT_VACCINE.getName()));
-        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.TT_VACCINATION.getName()));
+        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, ANC_IPT_VACCINE.getName()));
+        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, TT_VACCINATION.getName()));
     }
 
     @Test
@@ -90,8 +91,8 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
                 .withAddHistory(true).withLastOPV("0").withLastOPVDate(dateOfBirth).withLastIPTi("2").withLastIPTiDate(dateOfBirth);
 
         mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
-        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_OPV_0.getName()));
-        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_IPT_VACCINE.getName()));
+        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_0.getName()));
+        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, CWC_IPT_VACCINE.getName()));
     }
 
     @Test
@@ -107,8 +108,8 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
                 .withAddHistory(true).withLastOPV("1").withLastOPVDate(dateOfBirth);
 
         mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
-        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_OPV_0.getName()));
-        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, ScheduleNames.CWC_OPV_OTHERS.getName()));
+        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_0.getName()));
+        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_OTHERS.getName()));
     }
 
     LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
