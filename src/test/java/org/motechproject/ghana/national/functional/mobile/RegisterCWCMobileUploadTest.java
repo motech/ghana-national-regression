@@ -1,5 +1,6 @@
 package org.motechproject.ghana.national.functional.mobile;
 
+import junit.framework.Assert;
 import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
@@ -248,6 +249,24 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 today().plusWeeks(1), IPTiDose.IPTi2.milestoneName());
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), Utility.getNextOf(OPVDose.byValue(testCWCEnrollment.getLastOPV())).name(),
                 today().plusWeeks(1), OPVDose.OPV_2.name());
+    }
+
+    @Test
+    public void shouldCreateCareHistoryEvenIfCareDateIsEqualToDateOfBirthOfChild() {
+        String staffId = staffGenerator.createStaff(browser, homePage);
+        LocalDate dateOfBirth = DateUtil.today();
+        TestPatient patient = TestPatient.with(dataGenerator.randomString(8), staffId).patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).dateOfBirth(dateOfBirth);
+        String patientId = patientGenerator.createPatient(patient, browser, homePage);
+        String openMRSId = openMRSDB.getOpenMRSId(patientId);
+        LocalDate registrationDate = DateUtil.today();
+
+        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.createWithoutHistory()
+                .withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate)
+                .withAddHistory(true).withLastOPV("0").withLastOPVDate(dateOfBirth).withLastIPTi("2").withLastIPTiDate(dateOfBirth);
+
+        mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_0.getName()));
+        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, CWC_IPT_VACCINE.getName()));
     }
 
     private LocalDate expectedFirstAlertDate(String scheduleName, LocalDate referenceDate) {
