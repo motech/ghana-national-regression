@@ -169,6 +169,10 @@ public class TestMobileMidwifeEnrollment {
     public String learnedFrom() {
         return learnedFrom.getValue();
     }
+    
+    public String patientId(){
+        return patientId;
+    }
 
     public String reasonToJoin() {
         return reasonToJoin.getValue();
