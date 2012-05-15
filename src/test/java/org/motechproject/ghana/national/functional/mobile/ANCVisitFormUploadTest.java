@@ -40,6 +40,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.motechproject.util.DateUtil.today;
 import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -63,8 +64,10 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(testPatient);
 
+        LocalDate estimatedDateOfDelivery = today().plusMonths(6);
+        LocalDate registrationDate = today().minusDays(4);
         TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withStaffId(staffId)
-                .withRegistrationToday(RegistrationToday.IN_PAST);
+                .withRegistrationToday(RegistrationToday.IN_PAST).withRegistrationDate(registrationDate).withEstimatedDateOfDelivery(estimatedDateOfDelivery);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
 
         searchPatientPage.searchWithName(patientFirstName);
@@ -74,7 +77,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
         ancEnrollmentPage.save(ancEnrollment);
 
-        final LocalDate nextANCVisitDate = DateUtil.newDate(2012, 4, 10);
+        final LocalDate nextANCVisitDate = today().plusWeeks(6);
         XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
@@ -95,7 +98,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("MALE INVOLVEMENT", "false"),
                 new OpenMRSObservationVO("VDRL TREATMENT", "true"),
                 new OpenMRSObservationVO("COMMENTS", "comments"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 August 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", formatDate(today().plusMonths(5))),
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true"),
                 new OpenMRSObservationVO("TETANUS TOXOID DOSE", "1.0"),
@@ -114,7 +117,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("ANC PNC LOCATION", "2.0"),
                 new OpenMRSObservationVO("REFERRED", "true"),
                 new OpenMRSObservationVO("DEWORMER", "true"),
-                new OpenMRSObservationVO("NEXT ANC DATE", "10 April 2012 00:00:00 IST"),
+                new OpenMRSObservationVO("NEXT ANC DATE", formatDate(nextANCVisitDate)),
                 new OpenMRSObservationVO("DIASTOLIC BLOOD PRESSURE", "67.0"),
                 new OpenMRSObservationVO("INSECTICIDE TREATED NET USAGE", "false"),
                 new OpenMRSObservationVO("HOUSE", "house")
@@ -134,12 +137,13 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     private XformHttpClient.XformResponse createAncVisit(final String staffId, final TestPatient testPatient, final ANCEnrollmentPage ancEnrollmentPage, final LocalDate nextANCVisitDate) {
+        final LocalDate updatedEDD = today().plusMonths(5);
         return mobile.upload(MobileForm.ancVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", ancEnrollmentPage.getMotechPatientId());
-            put("date", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 1, 3).toDate()));
-            put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 8, 3).toDate()));
+            put("date",new SimpleDateFormat("yyyy-MM-dd").format(today().toDate()));
+            put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(updatedEDD.toDate()));
             put("serialNumber", "4ds65");
             put("visitNumber", "4");
             put("bpDiastolic", "67");
@@ -208,5 +212,9 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             }
         }
         return alertTriggers;
+    }
+
+    private String formatDate(LocalDate date) {
+        return new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(date.toDate());
     }
 }
