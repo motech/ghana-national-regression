@@ -1,9 +1,8 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.ektorp.CouchDbConnector;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.domain.*;
-import org.motechproject.ghana.national.domain.mobilemidwife.MobileMidwifeEnrollment;
+import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
@@ -19,10 +18,7 @@ import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage
 import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.repository.AllMobileMidwifeEnrollments;
 import org.motechproject.util.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -36,12 +32,6 @@ import static org.testng.AssertJUnit.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
-
-    private AllMobileMidwifeEnrollments allEnrollments;
-
-    @Qualifier("couchDbConnector")
-    @Autowired
-    CouchDbConnector couchDbConnector;
 
     @Test
     public void shouldUploadDeliveryFormSuccessfully() throws Exception {
@@ -143,16 +133,13 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
         }});
         assertEquals(1, xformResponse.getSuccessCount());
 
-        allEnrollments = new AllMobileMidwifeEnrollments(couchDbConnector);
-        MobileMidwifeEnrollment mobileMidwifeEnrollment = allEnrollments.findActiveBy(patientId);
-
-        assertEquals(ServiceType.CHILD_CARE,mobileMidwifeEnrollment.getServiceType());
-        assertEquals("41",mobileMidwifeEnrollment.getMessageStartWeek());
-        assertEquals(enrollmentDetails.phoneOwnership(),mobileMidwifeEnrollment.getPhoneOwnership());
-        assertEquals(enrollmentDetails.patientId(),mobileMidwifeEnrollment.getPatientId());
-        assertEquals(enrollmentDetails.staffId(),mobileMidwifeEnrollment.getStaffId());
-        assertEquals(enrollmentDetails.language(),mobileMidwifeEnrollment.getLanguage());
-        assertEquals(enrollmentDetails.learnedFrom(),mobileMidwifeEnrollment.getLearnedFrom());
+        enrollmentDetails.withMessageStartWeek(MessageStartWeek.findBy("41")).withServiceType(ServiceType.CHILD_CARE);
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
+        searchPatientPage.searchWithMotechId(patientId);
+        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = toMobileMidwifeEnrollmentPage(patient, searchPatientPage);
+        assertEquals(ServiceType.CHILD_CARE.toString(), mobileMidwifeEnrollmentPage.serviceType());
+        assertEquals(enrollmentDetails.medium(),mobileMidwifeEnrollmentPage.medium());
+        assertEquals(enrollmentDetails, mobileMidwifeEnrollmentPage.details());
     }
 
     private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {
