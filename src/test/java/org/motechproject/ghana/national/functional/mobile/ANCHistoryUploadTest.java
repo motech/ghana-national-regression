@@ -48,7 +48,7 @@ public class ANCHistoryUploadTest extends LoggedInUserFunctionalTest {
         mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPageAfterEdit);
 
 
-        assertThat(mobileMidwifeEnrollmentPage.status(),is("INACTIVE"));
+        assertThat(mobileMidwifeEnrollmentPage.status(), is("INACTIVE"));
     }
 
 
