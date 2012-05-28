@@ -108,6 +108,10 @@ public class PatientPage extends HomePage {
     @CacheLookup
     private WebElement subDistrict;
 
+    @FindBy(id = "phoneNumber")
+    @CacheLookup
+    private WebElement phoneNumber;
+
     @FindBy(id = "staffId")
     @CacheLookup
     private WebElement staffId;
@@ -133,6 +137,12 @@ public class PatientPage extends HomePage {
     public PatientPage withStaffId(String staffId) {
         this.staffId.clear();
         this.staffId.sendKeys(staffId);
+        return this;
+    }
+
+    public PatientPage withPhoneNumber(String phoneNumber) {
+        this.phoneNumber.clear();
+        this.phoneNumber.sendKeys(phoneNumber);
         return this;
     }
 
@@ -251,7 +261,8 @@ public class PatientPage extends HomePage {
                 .withAddress(patient.address())
                 .withGender(patient.isFemale())
                 .withDateofBirth(patient.dateOfBirth())
-                .withStaffId(patient.staffId());
+                .withStaffId(patient.staffId())
+                .withPhoneNumber(patient.phoneNumber());
         if (patient.hasMotechId())
             patientPage.withMotechId(patient.motechId());
         patientPage.submit();

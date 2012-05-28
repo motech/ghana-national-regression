@@ -20,4 +20,13 @@ public class FacilityGenerator {
         facilityPage.waitForSuccessMessage();
         return facilityPage.facilityId();
     }
+
+    @LoginAsAdmin
+    @ApiSession
+    public String createFacility(TestFacility facility,Browser browser, HomePage homePage) {
+        FacilityPage facilityPage = browser.toFacilityPage(homePage);
+        facilityPage.save(facility);
+        facilityPage.waitForSuccessMessage();
+        return facilityPage.facilityId();
+    }
 }

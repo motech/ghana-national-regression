@@ -30,6 +30,7 @@ public class TestPatient {
     private LocalDate registrationDate;
     private String motherMotechId;
     private String serialNumber;
+    private String phoneNumber;
 
     public static TestPatient with(String firstName, String staffId) {
         TestPatient testPatient = new TestPatient();
@@ -83,6 +84,7 @@ public class TestPatient {
             put("staffId", staffId);
             put("motherMotechId", motherMotechId);
             put("serialNumber", serialNumber);
+            put("phoneNumber", phoneNumber);
         }};
     }
 
@@ -138,6 +140,10 @@ public class TestPatient {
 
     public String firstName() {
         return firstName;
+    }
+
+    public String phoneNumber() {
+        return phoneNumber;
     }
 
     public PATIENT_REGN_MODE registrationMode() {
@@ -227,6 +233,11 @@ public class TestPatient {
 
     public TestPatient serialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+        return this;
+    }
+
+    public TestPatient phoneNumber(String phoneNumber){
+        this.phoneNumber=phoneNumber;
         return this;
     }
 
