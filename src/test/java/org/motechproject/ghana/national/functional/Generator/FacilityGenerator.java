@@ -23,7 +23,19 @@ public class FacilityGenerator {
 
     @LoginAsAdmin
     @ApiSession
-    public String createFacility(TestFacility facility,Browser browser, HomePage homePage) {
+    public TestFacility generateFacility(Browser browser, HomePage homePage) {
+        DataGenerator dataGenerator = new DataGenerator();
+        FacilityPage facilityPage = browser.toFacilityPage(homePage);
+        TestFacility facility = TestFacility.with("facility ghana" + dataGenerator.randomString(5));
+        facilityPage.save(facility);
+        facilityPage.waitForSuccessMessage();
+        facility.facilityId(facilityPage.facilityId());
+        return facility;
+    }
+
+    @LoginAsAdmin
+    @ApiSession
+    public String createFacility(TestFacility facility, Browser browser, HomePage homePage) {
         FacilityPage facilityPage = browser.toFacilityPage(homePage);
         facilityPage.save(facility);
         facilityPage.waitForSuccessMessage();

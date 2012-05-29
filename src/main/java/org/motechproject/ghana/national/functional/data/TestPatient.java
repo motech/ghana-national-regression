@@ -221,6 +221,11 @@ public class TestPatient {
         return this;
     }
 
+    public TestPatient facilityId(String facilityId) {
+        this.facilityId = facilityId;
+        return this;
+    }
+
     public TestPatient facilityIdWherePatientIsEdited(String facilityIdWherePatientIsEdited) {
         this.facilityIdWherePatientIsEdited = facilityIdWherePatientIsEdited;
         return this;
