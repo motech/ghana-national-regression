@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.functional.pages.patient;
 
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
+import org.motechproject.ghana.national.functional.data.TestFacility;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.pages.home.HomePage;
 import org.openqa.selenium.WebDriver;
@@ -276,11 +277,26 @@ public class PatientPage extends HomePage {
         assertThat(getEstimatedDateOfBirth(), is(equalTo(patient.estimatedDateOfBirth())));
         assertThat(getGenderCode(), is(equalTo(patient.genderCode())));
         assertThat(isInsured(), is(equalTo(patient.insured())));
+        assertThat(valueOf(address), is(equalTo(patient.address())));
         assertThat(valueOf(region), is(equalTo(patient.region())));
         assertThat(selectedOption(facility), is(equalTo(patient.facility())));
-        assertThat(valueOf(address), is(equalTo(patient.address())));
         assertThat(valueOf(district), is(equalTo(patient.district())));
         assertThat(valueOf(subDistrict), is(equalTo(patient.subDistrict())));
+    }
+
+    public void displayingWithUpdatedFacility(TestPatient patient,TestFacility updatedFacility) {
+        assertThat(valueOf(firstName), is(equalTo(patient.firstName())));
+        assertThat(valueOf(middleName), is(equalTo(patient.middleName())));
+        assertThat(valueOf(lastName), is(equalTo(patient.lastName())));
+        assertThat(valueOf(dateOfBirth), is(equalTo(patient.dateOfBirth().toString(DateTimeFormat.forPattern("dd/MM/yyyy")))));
+        assertThat(getEstimatedDateOfBirth(), is(equalTo(patient.estimatedDateOfBirth())));
+        assertThat(getGenderCode(), is(equalTo(patient.genderCode())));
+        assertThat(isInsured(), is(equalTo(patient.insured())));
+        assertThat(valueOf(address), is(equalTo(patient.address())));
+        assertThat(valueOf(region), is(equalTo(updatedFacility.region())));
+        assertThat(selectedOption(facility), is(equalTo(updatedFacility.name())));
+        assertThat(valueOf(district), is(equalTo(updatedFacility.district())));
+        assertThat(valueOf(subDistrict), is(equalTo(updatedFacility.subDistrict())));
     }
 
     private Boolean isInsured() {

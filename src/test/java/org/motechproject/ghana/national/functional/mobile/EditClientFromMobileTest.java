@@ -2,6 +2,7 @@ package org.motechproject.ghana.national.functional.mobile;
 
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.functional.LoggedInUserFunctionalTest;
+import org.motechproject.ghana.national.functional.data.TestFacility;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
@@ -36,7 +37,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
 
         assertThat(errorsMap.get("staffId"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("updatePatientFacilityId"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("facilityId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("motechId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("date"), hasItem("is mandatory"));
     }
@@ -77,7 +78,7 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
     public void shouldUpdatePatientIfNoErrorsAreFound() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
 
-        String facilityMotechId = facilityGenerator.createFacility(browser, homePage);
+        TestFacility facility = facilityGenerator.generateFacility(browser, homePage);
         String staffId = staffGenerator.createStaff(browser, homePage);
         String patientId = patientGenerator.createPatient(browser, homePage, staffId);
 
@@ -87,16 +88,15 @@ public class EditClientFromMobileTest extends LoggedInUserFunctionalTest {
                 .middleName("Updated Middle Name")
                 .lastName("Updated Last Name")
                 .motechId(patientId)
-                .facilityIdWherePatientIsEdited(facilityMotechId);
+                .facilityIdWherePatientIsEdited(facility.facilityId());
 
         mobile.upload(MobileForm.editClientForm(), patient.editFromMobile());
-
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithMotechId(patientId);
         searchPatientPage.displaying(patient);
 
         PatientEditPage patientPage = browser.toPatientEditPage(searchPatientPage, patient);
-        patientPage.displaying(patient);
+        patientPage.displayingWithUpdatedFacility(patient,facility);
     }
 }
