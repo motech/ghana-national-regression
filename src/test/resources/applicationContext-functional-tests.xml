@@ -32,6 +32,8 @@
     <import resource="classpath:applicationContext-messaging-gateway.xml"/>
     <import resource="classpath:applicationMessageCampaign.xml"/>
     <import resource="classpath:applicationContext-email.xml"/>
+    <import resource="classpath:applicationOutboxAPI.xml"/>
+
 
 
     <bean id="openMRSDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
