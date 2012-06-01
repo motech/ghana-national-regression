@@ -5,6 +5,7 @@ import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.motechproject.ghana.national.domain.mobilemidwife.ServiceType;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
+import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
@@ -13,12 +14,8 @@ import org.motechproject.ghana.national.functional.pages.BasePage;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
-import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
-import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
-import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
-import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
+import org.motechproject.ghana.national.functional.pages.patient.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.util.DateUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
@@ -27,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import static java.util.Arrays.asList;
+import static org.motechproject.util.DateUtil.today;
 import static org.testng.AssertJUnit.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -43,16 +41,16 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
         final TestPatient testPatient = TestPatient.with(patientFirstName, staffId)
                 .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
                 .estimatedDateOfBirth(false);
+        TestANCEnrollment testANCEnrollment = TestANCEnrollment.createWithoutHistory().withStaffId(staffId)
+                .withEstimatedDateOfDelivery(today().plusWeeks(12));
+        final String motechId = patientGenerator.createPatientWithANC(testPatient, testANCEnrollment, browser, homePage);
 
-        final PatientPage patientPage = browser.toCreatePatient(homePage);
         final String babyName = "baby " + dataGenerator.randomString(5);
-        patientPage.create(testPatient);
-        final String motechId = patientPage.motechId();
         XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.deliveryForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", motechId);
-            put("date", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").format(DateUtil.today().minusDays(2).toDate()));
+            put("date", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").format(today().minusDays(2).toDate()));
             put("mode", ChildDeliveryMode.NORMAL.name());
             put("outcome", ChildDeliveryOutcome.SINGLETON.name());
             put("maleInvolved", "Y");
@@ -101,11 +99,15 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldRolloverToChildCareMMEnrollmentOnSuccessfulDeliveryIfAlreadyRegistered(){
+    public void shouldRolloverToChildCareMMEnrollmentOnSuccessfulDeliveryIfAlreadyRegistered() {
         DataGenerator dataGenerator = new DataGenerator();
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final TestPatient patient = TestPatient.with("Samy Johnson" + dataGenerator.randomString(5), staffId);
-        final String patientId = patientGenerator.createPatient(patient, browser, homePage);
+
+        TestANCEnrollment testANCEnrollment = TestANCEnrollment.createWithoutHistory().withStaffId(staffId)
+                .withEstimatedDateOfDelivery(today().plusWeeks(12));
+
+        final String patientId = patientGenerator.createPatientWithANC(patient, testANCEnrollment, browser, homePage);
 
         TestMobileMidwifeEnrollment enrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).patientId(patientId);
 
@@ -115,7 +117,7 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("staffId", staffId);
             put("facilityId", patient.facilityId());
             put("motechId", patientId);
-            put("date", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").format(DateUtil.today().minusDays(2).toDate()));
+            put("date", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").format(today().minusDays(2).toDate()));
             put("mode", ChildDeliveryMode.NORMAL.name());
             put("outcome", ChildDeliveryOutcome.SINGLETON.name());
             put("maleInvolved", "Y");
@@ -138,8 +140,15 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
         searchPatientPage.searchWithMotechId(patientId);
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = toMobileMidwifeEnrollmentPage(patient, searchPatientPage);
         assertEquals(ServiceType.CHILD_CARE.toString(), mobileMidwifeEnrollmentPage.serviceType());
-        assertEquals(enrollmentDetails.medium(),mobileMidwifeEnrollmentPage.medium());
+        assertEquals(enrollmentDetails.medium(), mobileMidwifeEnrollmentPage.medium());
         assertEquals(enrollmentDetails, mobileMidwifeEnrollmentPage.details());
+    }
+
+    private PatientEditPage toPatientEditPage(TestPatient testPatient) {
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(testPatient.firstName());
+        searchPatientPage.displaying(testPatient);
+        return browser.toPatientEditPage(searchPatientPage, testPatient);
     }
 
     private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {

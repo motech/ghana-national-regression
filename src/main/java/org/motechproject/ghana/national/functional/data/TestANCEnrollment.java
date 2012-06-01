@@ -39,6 +39,8 @@ public class TestANCEnrollment implements CareEnrollment {
     private String facility;
     private String country;
 
+    private TestANCEnrollment(){}
+
     public static TestANCEnrollment create() {
         return TestANCEnrollment.createWithoutHistory().addHistoryDetails();
     }
@@ -339,11 +341,11 @@ public class TestANCEnrollment implements CareEnrollment {
     }
 
     public Boolean hasIPTHistory() {
-        return addCareHistory.contains(ANCCareHistory.IPT_SP);
+        return addCareHistory != null && addCareHistory.contains(ANCCareHistory.IPT_SP);
     }
 
     public Boolean hasTTHistory() {
-        return addCareHistory.contains(ANCCareHistory.TT);
+        return addCareHistory != null && addCareHistory.contains(ANCCareHistory.TT);
     }
 
     public String country() {

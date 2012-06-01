@@ -44,8 +44,8 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
         assertEquals(errors.size(), 1);
         final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
 
-        assertThat(errorsMap.get("patientId"), hasItem("is invalid"));
-        assertThat(errorsMap.get("patientId"), hasItem("not found"));
+        assertThat(errorsMap.get("motechId"), hasItem("is invalid"));
+        assertThat(errorsMap.get("motechId"), hasItem("not found"));
 
     }
 
@@ -89,7 +89,7 @@ public class RegisterMobileMidwifeTest extends LoggedInUserFunctionalTest {
 
         assertThat(errorsMap.get("staffId"), hasItem("is mandatory"));
         assertThat(errorsMap.get("facilityId"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("patientId"), hasItem("is mandatory"));
+        assertThat(errorsMap.get("motechId"), hasItem("is mandatory"));
     }
 
     @Test
