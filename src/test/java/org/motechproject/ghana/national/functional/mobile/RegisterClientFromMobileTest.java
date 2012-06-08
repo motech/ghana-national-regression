@@ -4,7 +4,9 @@ import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
+import org.motechproject.ghana.national.domain.IPTiDose;
 import org.motechproject.ghana.national.domain.OPVDose;
+import org.motechproject.ghana.national.domain.RotavirusDose;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.*;
 import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
@@ -16,7 +18,6 @@ import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientP
 import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
 import org.motechproject.ghana.national.functional.pages.patient.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.service.IPTiDose;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -270,6 +271,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","MEASLES VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","ROTAVIRUS DOSE"),
+                new OpenMRSObservationVO("ROTAVIRUS DOSE","1.0"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE","1.0")
         ));
     }
@@ -389,6 +392,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), dateOfBirth), OPVDose.OPV_1.milestoneName());
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId,CWC_IPT_VACCINE.getName()),
                 scheduleTracker.firstAlert(CWC_IPT_VACCINE.getName(),dateOfBirth), IPTiDose.IPTi1.name());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, CWC_ROTAVIRUS.getName()),
+                scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), dateOfBirth), RotavirusDose.ROTAVIRUS1.name());
     }
 
 }

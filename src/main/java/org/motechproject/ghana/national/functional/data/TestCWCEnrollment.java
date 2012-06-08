@@ -9,7 +9,6 @@ import org.motechproject.util.DateUtil;
 
 import java.util.*;
 
-import static org.joda.time.format.DateTimeFormat.forPattern;
 import static org.motechproject.ghana.national.functional.util.MobileFormUtils.updateFieldByNameAndValue;
 import static org.motechproject.ghana.national.functional.util.MobileFormUtils.updateFieldName;
 import static org.motechproject.ghana.national.tools.Utility.nullSafeToString;
@@ -30,10 +29,12 @@ public class TestCWCEnrollment implements CareEnrollment {
     private LocalDate lastIPTiDate;
     private LocalDate lastYellowFeverDate;
     private LocalDate lastPentaDate;
+    private LocalDate lastRotavirusDate;
     private LocalDate lastMeaslesDate;
     private String lastOPV;
     private String lastIPTi;
     private String lastPenta;
+    private String lastRotavirus;
     private String country;
     private String region;
     private String district;
@@ -51,12 +52,14 @@ public class TestCWCEnrollment implements CareEnrollment {
         this.lastYellowFeverDate = DateUtil.newDate(2000, 11, 5);
         this.lastMeaslesDate = DateUtil.newDate(2000, 11, 7);
         this.lastPentaDate = DateUtil.newDate(2000, 11, 6);
+        this.lastRotavirusDate = DateUtil.newDate(2000, 11, 2);
         this.lastOPVDate = DateUtil.newDate(2000, 11, 2);
         this.lastVitaminADate = DateUtil.newDate(2000, 11, 3);
         this.lastIPTiDate = DateUtil.newDate(2000, 11, 4);
         this.lastOPV = "1";
         this.lastIPTi = "2";
         this.lastPenta = "3";
+        this.lastRotavirus = "1";
         return this;
     }
 
@@ -121,8 +124,10 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("lastIPTiDate", safe(lastIPTiDate));
             put("yellowFeverDate", safe(lastYellowFeverDate));
             put("lastPentaDate", safe(lastPentaDate));
+            put("lastRotavirusDate", safe(lastRotavirusDate));
             put("measlesDate", safe(lastMeaslesDate));
             put("lastPenta", lastPenta);
+            put("lastRotavirus", lastRotavirus);
             put("lastOPV", lastOPV);
             put("lastIPTi", lastIPTi);
 
