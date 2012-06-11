@@ -19,6 +19,7 @@ import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPa
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.messagegateway.domain.*;
 import org.motechproject.ghana.national.repository.SMSGateway;
+import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.openmrs.security.OpenMRSSession;
 import org.motechproject.util.DateUtil;
 import org.quartz.SchedulerException;
@@ -63,7 +64,7 @@ public class AggregationStrategyImplIT extends OpenMRSAwareFunctionalTest {
 
     DataGenerator dataGenerator = new DataGenerator();
 
-    String  facilityName;
+    String facilityName;
     TestFacility facility;
     String facilityId;
     String staffId;
@@ -74,29 +75,30 @@ public class AggregationStrategyImplIT extends OpenMRSAwareFunctionalTest {
         context.setAuthentication(new UsernamePasswordAuthenticationToken(OpenMRSSession.login(userName, password), password));
         openMRSSession.open();
         openMRSSession.authenticate();
-        facilityName= "Facility Name" + dataGenerator.randomString(5);
+        facilityName = "Facility Name" + dataGenerator.randomString(5);
         facility = TestFacility.with(facilityName);
-        facilityId = facilityGenerator.createFacility(facility,browser, homePage);
-        staffId= staffGenerator.createStaff(browser, homePage);
+        facilityId = facilityGenerator.createFacility(facility, browser, homePage);
+        staffId = staffGenerator.createStaff(browser, homePage);
     }
 
     @Test
     public void shouldAggregateMessagesAndSendToPatientMobileNumberGivenDuringRegistrationIfThereISNoMMEnrollment() {
 
-        String patientPhoneNumber=dataGenerator.randomPhoneNumber();
+        String patientPhoneNumber = dataGenerator.randomPhoneNumber();
         TestPatient patientWithoutMM = TestPatient.with("firstName" + dataGenerator.randomString(5), staffId).phoneNumber(patientPhoneNumber);
         String patientId = patientGenerator.createPatient(patientWithoutMM, browser, homePage);
 
         SMSPayload payload1 = setUpPayload(SmsTemplateKeys.BCG_SMS_KEY, "milestone1", "early", "serialNumber1", patientId, patientWithoutMM, MessageRecipientType.PATIENT);
         SMSPayload payload2 = setUpPayload(SmsTemplateKeys.CWC_MEASLES_SMS_KEY, "milestone1", "late", "serialNumber2", patientId, patientWithoutMM, MessageRecipientType.PATIENT);
         SMSPayload payload3 = setUpPayload(SmsTemplateKeys.CWC_YF_SMS_KEY, "milestone1", "due", "serialNumber3", patientId, patientWithoutMM, MessageRecipientType.PATIENT);
-        List<SMS> aggregatedSMS = aggregationStrategy.aggregate(Arrays.<SMSPayload>asList(payload1, payload2, payload3));
-        String expectedText=new StringBuilder().append(payload1.getText()).append(Constants.SMS_SEPARATOR)
+        List<Payload> aggregatedPayload = aggregationStrategy.aggregate(Arrays.<Payload>asList(payload1, payload2, payload3));
+        String expectedText = new StringBuilder().append(payload1.getText()).append(Constants.SMS_SEPARATOR)
                 .append(payload2.getText()).append(Constants.SMS_SEPARATOR)
                 .append(payload3.getText()).append(Constants.SMS_SEPARATOR).toString();
-        assertThat(aggregatedSMS.size(),is(equalTo(1)));
-        assertThat(aggregatedSMS.get(0).getContent().getText(),is(equalTo(expectedText)));
-        assertThat(aggregatedSMS.get(0).getPhoneNumber(),is(equalTo(patientPhoneNumber)));
+        List<SMSPayload> aggregatedSMS = Utility.cast(aggregatedPayload);
+        assertThat(aggregatedSMS.size(), is(equalTo(1)));
+        assertThat(aggregatedSMS.get(0).getText(), is(equalTo(expectedText)));
+        assertThat(aggregatedSMS.get(0).getPhoneNumber(), is(equalTo(patientPhoneNumber)));
 
 
     }
@@ -114,40 +116,41 @@ public class AggregationStrategyImplIT extends OpenMRSAwareFunctionalTest {
         SMSPayload payload1 = setUpPayload(SmsTemplateKeys.BCG_SMS_KEY, "milestone1", "early", "serialNumber1", patientId, patientWithMM, MessageRecipientType.PATIENT);
         SMSPayload payload2 = setUpPayload(SmsTemplateKeys.CWC_MEASLES_SMS_KEY, "milestone1", "late", "serialNumber2", patientId, patientWithMM, MessageRecipientType.PATIENT);
         SMSPayload payload3 = setUpPayload(SmsTemplateKeys.CWC_YF_SMS_KEY, "milestone1", "due", "serialNumber3", patientId, patientWithMM, MessageRecipientType.PATIENT);
-        List<SMS> aggregatedSMS = aggregationStrategy.aggregate(Arrays.<SMSPayload>asList(payload1, payload2, payload3));
-        String expectedText=new StringBuilder().append(payload1.getText()).append(Constants.SMS_SEPARATOR)
+        List<Payload> aggregatedSMS = aggregationStrategy.aggregate(Arrays.<Payload>asList(payload1, payload2, payload3));
+        String expectedText = new StringBuilder().append(payload1.getText()).append(Constants.SMS_SEPARATOR)
                 .append(payload2.getText()).append(Constants.SMS_SEPARATOR)
                 .append(payload3.getText()).append(Constants.SMS_SEPARATOR).toString();
-        assertThat(aggregatedSMS.size(),is(equalTo(1)));
-        assertThat(aggregatedSMS.get(0).getContent().getText(),is(equalTo(expectedText)));
-        assertThat(aggregatedSMS.get(0).getPhoneNumber(),is(equalTo(enrollmentDetails.phoneNumber())));
+        assertThat(aggregatedSMS.size(), is(equalTo(1)));
+        assertThat(Utility.<Payload,SMSPayload>cast(aggregatedSMS).get(0).getText(), is(equalTo(expectedText)));
+        assertThat(Utility.<Payload,SMSPayload>cast(aggregatedSMS).get(0).getPhoneNumber(), is(equalTo(enrollmentDetails.phoneNumber())));
 
 
     }
 
     @Test
-    public void shouldSendDefaultMessagesToFacilityIfThereAreNoValidMessages(){
-        HashMap templateValues=new HashMap<String, String>() {{
+    public void shouldSendDefaultMessagesToFacilityIfThereAreNoValidMessages() {
+        HashMap templateValues = new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
             put(FACILITY, facilityName);
         }};
-         SMSPayload smsPayload= setUpDefaultPayloadForFacility(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY, templateValues);
+        SMSPayload smsPayload = setUpDefaultPayloadForFacility(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY, templateValues);
 
-        List<SMS> aggregatedSMS = aggregationStrategy.aggregate(Arrays.<SMSPayload>asList(smsPayload));
-        String expectedText=facilityName+" has no "+ join(AlertWindow.ghanaNationalWindowNames(), ", ")+" cares for this week";
-        assertThat(aggregatedSMS.size(),is(equalTo(1)));
-        assertThat(aggregatedSMS.get(0).getContent().getText(),is(equalTo(expectedText)));
-        assertThat(aggregatedSMS.get(0).getPhoneNumber(),is(equalTo(facility.phoneNumber())));
+        List<Payload> aggregatedPayload = aggregationStrategy.aggregate(Arrays.<Payload>asList(smsPayload));
+        String expectedText = facilityName + " has no " + join(AlertWindow.ghanaNationalWindowNames(), ", ") + " cares for this week";
+        List<SMSPayload> aggregatedSMS = Utility.cast(aggregatedPayload);
+        assertThat(aggregatedSMS.size(), is(equalTo(1)));
+        assertThat(aggregatedSMS.get(0).getText(), is(equalTo(expectedText)));
+        assertThat(aggregatedSMS.get(0).getPhoneNumber(), is(equalTo(facility.phoneNumber())));
     }
 
     @Test
-    public void shouldNotSendDefaultMessagesToFacilityIfThereAreValidMessages(){
+    public void shouldNotSendDefaultMessagesToFacilityIfThereAreValidMessages() {
 
-        final HashMap defaultTemplateValues=new HashMap<String, String>() {{
+        final HashMap defaultTemplateValues = new HashMap<String, String>() {{
             put(WINDOW_NAMES, join(AlertWindow.ghanaNationalWindowNames(), ", "));
             put(FACILITY, facilityName);
         }};
-        List<SMSPayload> messagesList = new ArrayList<SMSPayload>() {{
+        List<Payload> messagesList = new ArrayList<Payload>() {{
             add(SMSPayload.fromText(UPCOMING.getName() + ",milestoneName1,motechId,serialNumber,firstName,lastName", facilityId, null, null, MessageRecipientType.FACILITY));
             add(SMSPayload.fromText(UPCOMING.getName() + ",milestoneName2,motechId,serialNumber,firstName,lastName", facilityId, null, null, MessageRecipientType.FACILITY));
             add(SMSPayload.fromText(DUE.getName() + ",milestoneName,motechId,serialNumber,firstName,lastName", facilityId, null, null, MessageRecipientType.FACILITY));
@@ -156,11 +159,11 @@ public class AggregationStrategyImplIT extends OpenMRSAwareFunctionalTest {
             add(setUpDefaultPayloadForFacility(SmsTemplateKeys.FACILITIES_DEFAULT_MESSAGE_KEY, defaultTemplateValues));
         }};
 
-        List<SMS> aggregatedSMS = aggregationStrategy.aggregate(messagesList);
-        assertThat(aggregatedSMS.size(),is(equalTo(3)));
-        MatcherAssert.assertThat(aggregatedSMS.get(0).getContent().getText(), is(equalTo(UPCOMING.getName() + ": firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2")));
-        MatcherAssert.assertThat(aggregatedSMS.get(1).getContent().getText(), is(equalTo((DUE.getName() + ": firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName"))));
-        MatcherAssert.assertThat(aggregatedSMS.get(2).getContent().getText(), is(equalTo(facilityName + " has no Overdue cares for this week")));
+        List<SMSPayload> aggregatedSMS = Utility.cast(aggregationStrategy.aggregate(messagesList));
+        assertThat(aggregatedSMS.size(), is(equalTo(3)));
+        MatcherAssert.assertThat(aggregatedSMS.get(0).getText(), is(equalTo(UPCOMING.getName() + ": firstName lastName, motechId, serialNumber, milestoneName1, milestoneName2")));
+        MatcherAssert.assertThat(aggregatedSMS.get(1).getText(), is(equalTo((DUE.getName() + ": firstName lastName, motechId, serialNumber, milestoneName, firstName2 lastName3, motechId2, serialNumber, milestoneName, firstName2 lastName3, motechId3, serialNumber, milestoneName"))));
+        MatcherAssert.assertThat(aggregatedSMS.get(2).getText(), is(equalTo(facilityName + " has no Overdue cares for this week")));
         MatcherAssert.assertThat(aggregatedSMS.get(0).getPhoneNumber(), is(equalTo(facility.phoneNumber())));
         MatcherAssert.assertThat(aggregatedSMS.get(1).getPhoneNumber(), is(equalTo(facility.phoneNumber())));
         MatcherAssert.assertThat(aggregatedSMS.get(2).getPhoneNumber(), is(equalTo(facility.phoneNumber())));

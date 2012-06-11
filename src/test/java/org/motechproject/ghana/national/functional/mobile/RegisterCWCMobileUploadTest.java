@@ -6,6 +6,7 @@ import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.IPTiDose;
 import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.RegistrationToday;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
@@ -25,7 +26,6 @@ import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEn
 import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
-import org.motechproject.ghana.national.service.IPTiDose;
 import org.motechproject.ghana.national.tools.Utility;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +136,8 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "ROTAVIRUS DOSE"),
+                new OpenMRSObservationVO("ROTAVIRUS DOSE", "1.0"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0")
         ));
     }
@@ -169,7 +171,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldCreatePentaScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
+    public void shouldCreatePentaRotavirusScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient patient = TestPatient.with("name", staffId).dateOfBirth(today().minusWeeks(5)).patientType(CHILD_UNDER_FIVE);
         String patientId = patientGenerator.createPatient(patient, browser, homePage);
@@ -183,10 +185,11 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA.getName(), patient.dateOfBirth()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA.getName(), patient.dateOfBirth()));
     }
 
     @Test
-    public void shouldNotCreatePentaScheduleDuringCWCRegistrationIfTheTodayFallsAfter10WeeksFromDateOfBirth() {
+    public void shouldNotCreatePentaAndRotavirusScheduleDuringCWCRegistrationIfTheTodayFallsAfter10WeeksFromDateOfBirth() {
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient patient = TestPatient.with("name-new", staffId).dateOfBirth(today().minusWeeks(11)).patientType(CHILD_UNDER_FIVE);
         String patientId = patientGenerator.createPatient(patient, browser, homePage);
@@ -200,6 +203,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
 
         assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_PENTA.getName()));
+        assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_ROTAVIRUS.getName()));
     }
 
     @Test
