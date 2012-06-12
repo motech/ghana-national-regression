@@ -136,8 +136,6 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "ROTAVIRUS DOSE"),
-                new OpenMRSObservationVO("ROTAVIRUS DOSE", "1.0"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0")
         ));
     }
