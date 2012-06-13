@@ -268,6 +268,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
         mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_0.getName()));
+        Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_OTHERS.getName()));
         Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, CWC_IPT_VACCINE.getName()));
     }
 
