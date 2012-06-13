@@ -270,7 +270,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","MEASLES VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","YELLOW FEVER VACCINATION"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","ROTAVIRUS"),
+//                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","ROTAVIRUS"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE","1.0")
         ));
     }
