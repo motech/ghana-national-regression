@@ -37,14 +37,14 @@ public class TestMobileMidwifeEnrollment {
         enrollment.subDistrict = "Kasoa";
         enrollment.facility = "Papaase CHPS";
         enrollment.consent = Boolean.TRUE;
-        enrollment.serviceType = ServiceType.PREGNANCY_TEXT;
+        enrollment.serviceType = ServiceType.PREGNANCY;
         enrollment.mmRegPhone = new DataGenerator().randomPhoneNumber();
         enrollment.phoneOwnership = PhoneOwnership.PERSONAL;
         enrollment.medium = Medium.SMS;
         enrollment.language = Language.EN;
         enrollment.learnedFrom = LearnedFrom.MOTECH_FIELD_AGENT;
         enrollment.reasonToJoin = ReasonToJoin.KNOW_MORE_PREGNANCY_CHILDBIRTH;
-        enrollment.messageStartWeek = new MessageStartWeek("10", 10, "Pregnancy-week 10", ServiceType.PREGNANCY_TEXT);
+        enrollment.messageStartWeek = new MessageStartWeek("10", 10, "Pregnancy-week 10", ServiceType.PREGNANCY);
         enrollment.facilityId="13212";
         return enrollment;
     }

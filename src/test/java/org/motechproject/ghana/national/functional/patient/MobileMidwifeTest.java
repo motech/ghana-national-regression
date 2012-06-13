@@ -1,4 +1,3 @@
-
 package org.motechproject.ghana.national.functional.patient;
 
 import org.junit.runner.RunWith;
@@ -60,7 +59,7 @@ public class MobileMidwifeTest extends LoggedInUserFunctionalTest {
         assertEquals(enrollmentDetails, midwifeEnrollment);
 
         // edit
-        enrollmentDetails.withServiceType(ServiceType.CHILD_CARE_TEXT).withMessageStartWeek(findBy("45"));
+        enrollmentDetails.withServiceType(ServiceType.CHILD_CARE).withMessageStartWeek(findBy("45"));
         enrollmentPage.enroll(enrollmentDetails);
 
         enrollmentPage = toMobileMidwifeEnrollmentPage(patient, enrollmentPage);
