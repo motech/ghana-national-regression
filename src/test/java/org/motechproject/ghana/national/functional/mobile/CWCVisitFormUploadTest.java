@@ -105,7 +105,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("COMMUNITY", "Home"),
                 new OpenMRSObservationVO("HEIGHT (CM)", "13.0"),
                 new OpenMRSObservationVO("PENTA VACCINATION DOSE", "1.0"),
-                new OpenMRSObservationVO("ROTAVIRUS DOSE", "1.0"),
+                new OpenMRSObservationVO("ROTAVIRUS", "1.0"),
                 new OpenMRSObservationVO("MID-UPPER ARM CIRCUMFERENCE", "12.0"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),
                 new OpenMRSObservationVO("SERIAL NUMBER", "1234567"),
