@@ -135,11 +135,11 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
         }});
         assertEquals(1, xformResponse.getSuccessCount());
 
-        enrollmentDetails.withMessageStartWeek(MessageStartWeek.findBy("41")).withServiceType(ServiceType.CHILD_CARE);
+        enrollmentDetails.withMessageStartWeek(MessageStartWeek.findBy("41")).withServiceType(ServiceType.CHILD_CARE_TEXT);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
         searchPatientPage.searchWithMotechId(patientId);
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = toMobileMidwifeEnrollmentPage(patient, searchPatientPage);
-        assertEquals(ServiceType.CHILD_CARE.toString(), mobileMidwifeEnrollmentPage.serviceType());
+        assertEquals(ServiceType.CHILD_CARE_TEXT.toString(), mobileMidwifeEnrollmentPage.serviceType());
         assertEquals(enrollmentDetails.medium(), mobileMidwifeEnrollmentPage.medium());
         assertEquals(enrollmentDetails, mobileMidwifeEnrollmentPage.details());
     }
