@@ -115,7 +115,6 @@ public class XformHttpClient {
             hackDate(formData, "/careHistory/lastIPTDate");
             hackDate(formData, "/careHistory/lastTTDate");
             hackDate(formData, "/careHistory/lastOPVDate");
-            hackDate(formData, "/careHistory/lastRotavirusDate");
             hackDate(formData, "/careHistory/lastPentaDate");
             hackDate(formData, "/careHistory/lastRotavirusDate");
             hackDate(formData, "/careHistory/lastIPTIDate");
