@@ -169,7 +169,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldCreatePentaRotavirusScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
+    public void shouldCreatePentaAndRotavirusScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient patient = TestPatient.with("name", staffId).dateOfBirth(today().minusWeeks(5)).patientType(CHILD_UNDER_FIVE);
         String patientId = patientGenerator.createPatient(patient, browser, homePage);
