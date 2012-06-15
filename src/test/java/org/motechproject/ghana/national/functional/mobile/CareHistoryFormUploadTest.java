@@ -94,7 +94,7 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("facilityId", "13212");
             put("motechId", patientId);
             put("date", dateToString(date));
-            put("addHistory", "VITA_A,IPTI,BCG,OPV,PENTA,MEASLES,YF");
+            put("addHistory", "VITA_A,IPTI,BCG,OPV,PENTA,MEASLES,YF,ROTAVIRUS");
             put("bcgDate", dateToString(vaccinationDate));
             put("lastOPV", "1");
             put("lastOPVDate", dateToString(vaccinationDate));
@@ -103,6 +103,8 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("measlesDate", dateToString(vaccinationDate));
             put("yellowFeverDate", dateToString(vaccinationDate));
             put("lastIPTI", "1");
+            put("lastRotavirus", "1");
+            put("lastRotavirusDate", dateToString(vaccinationDate));
             put("lastIPTIDate", dateToString(vaccinationDate));
             put("lastVitaminADate", dateToString(vaccinationDate));
         }});
@@ -119,6 +121,7 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
                 new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "1.0"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),
+                new OpenMRSObservationVO("ROTAVIRUS", "1.0"),
                 new OpenMRSObservationVO("PENTA VACCINATION DOSE", "1.0")
         ));
     }
