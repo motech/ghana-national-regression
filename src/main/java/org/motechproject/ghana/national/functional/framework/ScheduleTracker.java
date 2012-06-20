@@ -3,7 +3,8 @@ package org.motechproject.ghana.national.functional.framework;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import org.motechproject.ghana.national.functional.domain.Alert;
+import org.motechproject.ghana.national.functional.domain.*;
+import org.motechproject.ghana.national.functional.domain.JobDetail;
 import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
@@ -18,23 +19,16 @@ import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRecord;
 import org.motechproject.scheduletracking.api.service.impl.ScheduleTrackingServiceImpl;
 import org.motechproject.util.DateUtil;
-import org.quartz.JobDataMap;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
-import org.quartz.Trigger;
+import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,18 +72,6 @@ public class ScheduleTracker {
         return scheduleTrackingService.getEnrollment(externalId, scheduleName);
     }
 
-    public void deleteAllJobs() throws SchedulerException {
-        for (Enrollment enrollment : allEnrollments.getAll()) {
-            allEnrollments.remove(enrollment);
-        }
-        Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        for (String jobGroup : scheduler.getJobGroupNames()) {
-            for (String jobName : scheduler.getJobNames(jobGroup)) {
-                scheduler.deleteJob(jobName, jobGroup);
-            }
-        }
-    }
-
     private void assertNotNull(Object object) {
         if (object == null) throw new AssertionError("should not be null");
     }
@@ -100,17 +82,16 @@ public class ScheduleTracker {
         return captureAlertsForNextMilestone(activeEnrollment.getId());
     }
 
-    protected List<org.motechproject.ghana.national.functional.domain.JobDetail> captureAlertsForNextMilestone(String enrollmentId) {
+    protected List<JobDetail> captureAlertsForNextMilestone(String enrollmentId) {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
-        String[] jobNames = new String[0];
-        List<org.motechproject.ghana.national.functional.domain.JobDetail> alertTriggers = new ArrayList<org.motechproject.ghana.national.functional.domain.JobDetail>();
+        List<JobDetail> alertTriggers = new ArrayList<JobDetail>();
         try {
-            jobNames = scheduler.getJobNames(jobGroupName);
-            for (String jobName : jobNames) {
-                if (jobName.contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
-                    Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
-                    alertTriggers.add(new org.motechproject.ghana.national.functional.domain.JobDetail((SimpleTrigger) triggersOfJob[0], scheduler.getJobDetail(jobName, jobGroupName)));
+            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(jobGroupName));
+            for (JobKey jobKey : jobKeys) {
+                if (jobKey.getName().contains(format("%s-%s", EventSubjects.MILESTONE_ALERT, enrollmentId))) {
+                    List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(jobKey);
+                    alertTriggers.add(new JobDetail((SimpleTrigger) triggersOfJob.get(0), scheduler.getJobDetail(jobKey)));
                 }
             }
         } catch (SchedulerException e) {
@@ -170,7 +151,7 @@ public class ScheduleTracker {
         Collections.sort(alertJobDetails, new Comparator<org.motechproject.ghana.national.functional.domain.JobDetail>() {
             @Override
             public int compare(org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail1, org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail2) {
-                return extractIndexFromAlertName(testJobDetail1.trigger().getName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getName()));
+                return extractIndexFromAlertName(testJobDetail1.trigger().getCalendarName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getCalendarName()));
             }
         });
     }

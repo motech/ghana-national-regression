@@ -30,8 +30,10 @@ import org.motechproject.scheduletracking.api.repository.AllSchedules;
 import org.motechproject.scheduletracking.api.service.EnrollmentRequest;
 import org.motechproject.scheduletracking.api.service.impl.EnrollmentsQueryService;
 import org.motechproject.util.DateUtil;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -431,8 +433,8 @@ public class GeneralQueryFormHandlerIT {
         }
         Scheduler scheduler = schedulerFactoryBean.getScheduler();
         for (String jobGroup : scheduler.getJobGroupNames()) {
-            for (String jobName : scheduler.getJobNames(jobGroup)) {
-                scheduler.deleteJob(jobName, jobGroup);
+            for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(jobGroup))) {
+                scheduler.deleteJob(jobKey);
             }
         }
 

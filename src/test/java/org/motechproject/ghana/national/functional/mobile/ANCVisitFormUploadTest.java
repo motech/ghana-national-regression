@@ -19,10 +19,8 @@ import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPa
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
 import org.motechproject.util.DateUtil;
-import org.quartz.CronTrigger;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,10 +29,7 @@ import org.testng.annotations.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -201,14 +196,14 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
     protected List<CronTrigger> captureAlertsForNextMilestone(String enrollmentId) throws SchedulerException {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
         final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
-        String[] jobNames = scheduler.getJobNames(jobGroupName);
+        Set<JobKey> jobNames = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(jobGroupName));
         List<CronTrigger> alertTriggers = new ArrayList<CronTrigger>();
 
-        for (String jobName : jobNames) {
-            if (jobName.contains(format("%s-%s", EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, enrollmentId))) {
-                Trigger[] triggersOfJob = scheduler.getTriggersOfJob(jobName, jobGroupName);
-                assertEquals(1, triggersOfJob.length);
-                alertTriggers.add((CronTrigger) triggersOfJob[0]);
+        for (JobKey jobKey : jobNames) {
+            if (jobKey.getName().contains(format("%s-%s", EventKeys.APPOINTMENT_REMINDER_EVENT_SUBJECT, enrollmentId))) {
+                List<? extends Trigger> triggersOfJob = scheduler.getTriggersOfJob(jobKey);
+                assertEquals(1, triggersOfJob.size());
+                alertTriggers.add((CronTrigger) triggersOfJob.get(0));
             }
         }
         return alertTriggers;
