@@ -176,11 +176,28 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         assertEquals(1, xformResponse.getSuccessCount());
         List<CronTrigger> cronTriggers = captureAlertsForNextMilestone(ancEnrollmentPage.getMotechPatientId());
         assertEquals(4, cronTriggers.size());
+        CronTrigger dueTrigger=null;
+        CronTrigger lateTrigger1=null;
+        CronTrigger lateTrigger2=null;
+        CronTrigger lateTrigger3=null;
 
-        CronTrigger dueTrigger = cronTriggers.get(0);
-        CronTrigger lateTrigger1 = cronTriggers.get(1);
-        CronTrigger lateTrigger2 = cronTriggers.get(2);
-        CronTrigger lateTrigger3 = cronTriggers.get(3);
+        for (CronTrigger cronTrigger : cronTriggers) {
+            if(cronTrigger.getJobKey().getName().contains("ANCVISIT0")){
+                dueTrigger=cronTrigger;
+            }if(cronTrigger.getJobKey().getName().contains("ANCVISIT1")){
+                lateTrigger1=cronTrigger;
+            }if(cronTrigger.getJobKey().getName().contains("ANCVISIT2")){
+                lateTrigger2=cronTrigger;
+            }if(cronTrigger.getJobKey().getName().contains("ANCVISIT3")){
+                lateTrigger3=cronTrigger;
+            }
+        }
+
+//
+//        List<CronTrigger> dueTrigger =  Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT0")),cronTriggers);
+//        List<CronTrigger> lateTrigger1 =Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT1")), cronTriggers);
+//        List<CronTrigger> lateTrigger2 =Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT2")), cronTriggers);
+//        List<CronTrigger> lateTrigger3 =Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT3")), cronTriggers);
 
         assertThat(dueTrigger.getNextFireTime(), is(minDate));
         assertThat(lateTrigger1.getNextFireTime(), is(dueDate));

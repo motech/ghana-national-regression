@@ -151,7 +151,7 @@ public class ScheduleTracker {
         Collections.sort(alertJobDetails, new Comparator<org.motechproject.ghana.national.functional.domain.JobDetail>() {
             @Override
             public int compare(org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail1, org.motechproject.ghana.national.functional.domain.JobDetail testJobDetail2) {
-                return extractIndexFromAlertName(testJobDetail1.trigger().getCalendarName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getCalendarName()));
+                return extractIndexFromAlertName(testJobDetail1.trigger().getKey().getName()).compareTo(extractIndexFromAlertName(testJobDetail2.trigger().getKey().getName()));
             }
         });
     }
