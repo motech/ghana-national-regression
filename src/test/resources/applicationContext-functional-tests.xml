@@ -22,6 +22,7 @@
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
     <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
     <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
+    <util:properties id="activemqProperties" location="classpath:activemq.properties"/>
     <util:properties id="openmrsProperties" location="classpath:openmrs.properties"/>
 
 
@@ -35,8 +36,8 @@
     <import resource="classpath:applicationOutboxAPI.xml"/>
     <import resource="classpath:applicationDecisionTree.xml"/>
     <import resource="classpath:ivrVerboiceContext.xml"/>
-    <!--<import resource="classpath:outboundEventChannelAdapter.xml"/>-->
-
+    <import resource="classpath:applicationScheduler.xml"/>
+    <import resource="classpath:applicationPlatformServerAPI.xml"/>
 
 
     <bean id="openMRSDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
