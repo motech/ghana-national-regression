@@ -93,6 +93,7 @@ public class XformHttpClient {
             hackDate(formData, "/patientRegistration/lastVitaminADate");
             hackDate(formData, "/patientRegistration/expDeliveryDate");
             hackDate(formData, "/patientRegistration/nhisExpires");
+            hackDate(formData, "/patientRegistration/lastPneumococcalDate");
             hackDate(formData, "/CWCRegistration/registrationDate");
             hackDate(formData, "/CWCRegistration/bcgDate");
             hackDate(formData, "/CWCRegistration/lastOPVDate");
@@ -102,6 +103,7 @@ public class XformHttpClient {
             hackDate(formData, "/CWCRegistration/lastIPTiDate");
             hackDate(formData, "/CWCRegistration/lastVitaminADate");
             hackDate(formData, "/CWCRegistration/lastRotavirusDate");
+            hackDate(formData, "/CWCRegistration/lastPneumococcalDate");
             hackDate(formData, "/opvVisit/visitDate");
             hackDate(formData, "/opvVisit/dateOfBirth");
             hackDate(formData, "/opvVisit/nhisExpires");
@@ -122,6 +124,7 @@ public class XformHttpClient {
             hackDate(formData, "/careHistory/bcgDate");
             hackDate(formData, "/careHistory/measlesDate");
             hackDate(formData, "/careHistory/yellowFeverDate");
+            hackDate(formData, "/careHistory/lastPneumococcalDate");
             hackDate(formData, "/child/date");
             hackDateTime(formData, "/delivery/date");
             hackDateTime(formData, "/pncmother/date");

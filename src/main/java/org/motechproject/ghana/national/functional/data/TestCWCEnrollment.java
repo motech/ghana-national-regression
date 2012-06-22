@@ -40,6 +40,8 @@ public class TestCWCEnrollment implements CareEnrollment {
     private String district;
     private String subDistrict;
     private String facility;
+    private LocalDate lastPneumococcalDate;
+    private String lastPneumococcal;
 
     public static TestCWCEnrollment create() {
         return createWithoutHistory().addHistoryDetails();
@@ -52,7 +54,8 @@ public class TestCWCEnrollment implements CareEnrollment {
         this.lastYellowFeverDate = DateUtil.newDate(2000, 11, 5);
         this.lastMeaslesDate = DateUtil.newDate(2000, 11, 7);
         this.lastPentaDate = DateUtil.newDate(2000, 11, 6);
-        this.lastRotavirusDate = DateUtil.newDate(2000, 11, 2);
+        this.lastRotavirusDate = DateUtil.newDate(2000, 11, 7);
+        this.lastPneumococcalDate = DateUtil.newDate(2000, 11, 2);
         this.lastOPVDate = DateUtil.newDate(2000, 11, 2);
         this.lastVitaminADate = DateUtil.newDate(2000, 11, 3);
         this.lastIPTiDate = DateUtil.newDate(2000, 11, 4);
@@ -60,6 +63,7 @@ public class TestCWCEnrollment implements CareEnrollment {
         this.lastIPTi = "2";
         this.lastPenta = "3";
         this.lastRotavirus = "1";
+        this.lastPneumococcal = "2";
         return this;
     }
 
@@ -125,9 +129,11 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("yellowFeverDate", safe(lastYellowFeverDate));
             put("lastPentaDate", safe(lastPentaDate));
             put("lastRotavirusDate", safe(lastRotavirusDate));
+            put("lastPneumococcalDate", safe(lastRotavirusDate));
             put("measlesDate", safe(lastMeaslesDate));
             put("lastPenta", lastPenta);
             put("lastRotavirus", lastRotavirus);
+            put("lastPneumococcal", lastPneumococcal);
             put("lastOPV", lastOPV);
             put("lastIPTi", lastIPTi);
 
@@ -267,6 +273,34 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public TestCWCEnrollment withLastPentaDate(LocalDate lastPentaDate) {
         this.lastPentaDate = lastPentaDate;
+        return this;
+    }
+
+    public LocalDate getLastPneumococcalDate() {
+        return lastPneumococcalDate;
+    }
+
+    public TestCWCEnrollment withLastPneumococcalDate(LocalDate lastPneumococcalDate) {
+        this.lastPneumococcalDate = lastPneumococcalDate;
+        return this;
+    }
+
+    public String getLastPneumococcal() {
+        return lastPneumococcal;
+    }
+
+    public TestCWCEnrollment withLastPneumococcal(String lastPneumococcal) {
+        this.lastPneumococcal = lastPneumococcal;
+        return this;
+    }
+
+    public TestCWCEnrollment withLastRotavirus(String lastRotavirus) {
+        this.lastRotavirus = lastRotavirus;
+        return this;
+    }
+
+    public TestCWCEnrollment withLastRotavirusDate(LocalDate lastRotavirusDate) {
+        this.lastRotavirusDate = lastRotavirusDate;
         return this;
     }
 

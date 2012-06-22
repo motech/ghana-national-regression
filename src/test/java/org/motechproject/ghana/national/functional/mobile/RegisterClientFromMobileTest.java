@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.IPTiDose;
 import org.motechproject.ghana.national.domain.OPVDose;
+import org.motechproject.ghana.national.domain.PneumococcalDose;
+import org.motechproject.ghana.national.domain.RotavirusDose;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.*;
 import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
@@ -232,7 +234,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
 
         Map<String, String> data = testClientRegistration.withProgramEnrollmentThroughMobile();
-        mobile.upload(MobileForm.registerClientForm(), data);
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerClientForm(), data);
+        assertEquals(1, response.getSuccessCount());
 
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
@@ -270,7 +273,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","MEASLES VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","YELLOW FEVER VACCINATION"),
-//                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","ROTAVIRUS"),
+                new OpenMRSObservationVO("ROTAVIRUS","2.0"),
+                new OpenMRSObservationVO("PNEUMOCOCCAL","2.0"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE","1.0")
         ));
     }
@@ -305,9 +309,46 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
         String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
-        
+
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_PENTA.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
+    }
+
+    @Test
+    public void shouldCreatePatientWithCWCRotavirusAndPneumococcalHistoryAndVerifySchedules() {
+        String staffId = staffGenerator.createStaff(browser, homePage);
+
+        String motherMotechId = patientGenerator.createPatient(browser, homePage, staffId);
+
+        LocalDate registrationDate = today();
+        LocalDate birthDate = registrationDate.minusWeeks(10);
+        LocalDate lastRotavirusDate = birthDate.plusWeeks(6);
+        LocalDate lastPneumococcalDate = birthDate.plusWeeks(7);
+
+        TestPatient patient = TestPatient.with("CWC History Name" + dataGenerator.randomString(5), staffId).
+                patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
+                motherMotechId(motherMotechId).registrationDate(registrationDate).dateOfBirth(birthDate);
+
+
+        TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId()).consent(false);
+        TestCWCEnrollment cwcEnrollmentDetails = TestCWCEnrollment.create()
+                .withLastRotavirus("1").withLastRotavirusDate(lastRotavirusDate)
+                .withLastPneumococcal("1").withLastPneumococcalDate(lastPneumococcalDate);
+
+        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
+
+        Map<String, String> data = testClientRegistration.withProgramEnrollmentThroughMobile();
+        mobile.upload(MobileForm.registerClientForm(), data);
+
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(patient.firstName());
+        searchPatientPage.displaying(patient);
+
+        PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
+        String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
+
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(CWC_PNEUMOCOCCAL.getName(),lastPneumococcalDate, PneumococcalDose.PNEUMO2.milestoneName()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), lastPneumococcalDate, RotavirusDose.ROTAVIRUS2.milestoneName()));
     }
 
     @Test

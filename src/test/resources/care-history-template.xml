@@ -19,6 +19,8 @@
                 <lastPentaDate/>
                 <lastRotavirus/>
                 <lastRotavirusDate/>
+                <lastPneumococcal/>
+                <lastPneumococcalDate/>
                 <measlesDate/>
                 <yellowFeverDate/>
                 <lastIPTI/>
@@ -64,6 +66,11 @@
         <xf:bind id="lastRotavirusDate" nodeset="/careHistory/lastRotavirusDate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'ROTAVIRUS'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
+        <xf:bind id="lastPneumococcal" nodeset="/careHistory/lastPneumococcal" type="xsd:string" visible="false()"
+                 relevant="/careHistory/addHistory = 'PNEUMOCOCCAL'" action="show" required="true()"/>
+        <xf:bind id="lastPneumococcalDate" nodeset="/careHistory/lastPneumococcalDate" type="xsd:date" visible="false()"
+                 relevant="/careHistory/addHistory = 'PNEUMOCOCCAL'" action="show" required="true()"
+                 constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
         <xf:bind id="measlesDate" nodeset="/careHistory/measlesDate" type="xsd:date" visible="false()"
                  relevant="/careHistory/addHistory = 'MEASLES'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
@@ -76,7 +83,8 @@
                  relevant="/careHistory/addHistory = 'IPTI'" action="show" required="true()"
                  constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
         <xf:bind id="lastVitaminADate" nodeset="/careHistory/lastVitaminADate" type="xsd:date" visible="false()"
-                 relevant="/careHistory/addHistory = 'VITA_A'" action="show" required="true()" constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
+                 relevant="/careHistory/addHistory = 'VITA_A'" action="show" required="true()"
+                 constraint=". &lt;= 'today()'" message="Invalid date: date specified is in the future"/>
         <xf:bind id="formtype" nodeset="/careHistory/formtype" type="xsd:string" required="true()" visible="false()"/>
         <xf:bind id="formname" nodeset="/careHistory/formname" type="xsd:string" required="true()" visible="false()"/>
     </xf:model>
@@ -135,6 +143,10 @@
             <xf:item id="10">
                 <xf:label>Rotavirus</xf:label>
                 <xf:value>ROTAVIRUS</xf:value>
+            </xf:item>
+            <xf:item id="11">
+                <xf:label>Pneumococcal</xf:label>
+                <xf:value>PNEUMOCOCCAL</xf:value>
             </xf:item>
         </xf:select>
         <xf:select1 bind="lastIPT">
@@ -237,6 +249,24 @@
         </xf:select1>
         <xf:input bind="lastRotavirusDate">
             <xf:label>Last Rotavirus date</xf:label>
+        </xf:input>
+        <xf:select1 bind="lastPneumococcal">
+            <xf:label>Last Pneumococcal</xf:label>
+            <xf:item id="1">
+                <xf:label>Pneumococcal 1</xf:label>
+                <xf:value>1</xf:value>
+            </xf:item>
+            <xf:item id="2">
+                <xf:label>Pneumococcal  2</xf:label>
+                <xf:value>2</xf:value>
+            </xf:item>
+            <xf:item id="3">
+                <xf:label>Pneumococcal  3</xf:label>
+                <xf:value>3</xf:value>
+            </xf:item>
+        </xf:select1>
+        <xf:input bind="lastPneumococcalDate">
+            <xf:label>Last Pneumococcal date</xf:label>
         </xf:input>
         <xf:input bind="measlesDate">
             <xf:label>Measles date</xf:label>

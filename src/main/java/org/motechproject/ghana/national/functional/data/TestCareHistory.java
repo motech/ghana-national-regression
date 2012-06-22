@@ -30,6 +30,8 @@ public class TestCareHistory {
     private LocalDate lastVitaminADate;
     private String lastRotavirus;
     private LocalDate lastRotavirusDate;
+    private String lastPneumococcal;
+    private LocalDate lastPneumococcalDate;
 
     public static TestCareHistory withoutHistory(String motechId) {
         final TestCareHistory careHistory = new TestCareHistory();
@@ -80,6 +82,8 @@ public class TestCareHistory {
             put("lastPentaDate", safe(lastPentaDate));
             put("lastRotavirus", lastRotavirus);
             put("lastRotavirusDate", safe(lastRotavirusDate));
+            put("lastPneumococcal", lastPneumococcal);
+            put("lastPneumococcalDate", safe(lastPneumococcalDate));
             put("measlesDate", safe(measlesDate));
             put("yellowFeverDate", safe(yellowFeverDate));
             put("lastIPTI", lastIPTI);
@@ -120,6 +124,13 @@ public class TestCareHistory {
         this.lastRotavirus= dosage;
         this.lastRotavirusDate= lastRotavirusDate;
         this.addHistory = (this.addHistory + " ROTAVIRUS").trim().replace(" ", ",");
+        return this;
+    }
+
+    public TestCareHistory withPneumococcal(String dosage, LocalDate lastPneumococcalDate) {
+        this.lastPneumococcal= dosage;
+        this.lastPneumococcalDate= lastPneumococcalDate;
+        this.addHistory = (this.addHistory + " PNEUMOCOCCAL").trim().replace(" ", ",");
         return this;
     }
 

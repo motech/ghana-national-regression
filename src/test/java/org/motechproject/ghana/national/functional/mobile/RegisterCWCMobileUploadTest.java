@@ -107,7 +107,8 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
         LocalDate registrationDate = DateUtil.today().plusDays(10);
-        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate);
+        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate)
+                                            .withLastPneumococcal("1").withLastPneumococcalDate(registrationDate.minusWeeks(3));
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
 
         Map<String, String> data = cwcEnrollment.withMobileMidwifeEnrollmentThroughMobile(mmEnrollmentDetails);
@@ -136,7 +137,8 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
-                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0")
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),
+                new OpenMRSObservationVO("PNEUMOCOCCAL", "1.0")
         ));
     }
 
@@ -169,7 +171,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldCreatePentaAndRotavirusScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
+    public void shouldCreatePentaRotavirusAndPneumococcalScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient patient = TestPatient.with("name", staffId).dateOfBirth(today().minusWeeks(5)).patientType(CHILD_UNDER_FIVE);
         String patientId = patientGenerator.createPatient(patient, browser, homePage);
@@ -184,6 +186,7 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA.getName(), patient.dateOfBirth()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PENTA.getName(), patient.dateOfBirth()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), expectedFirstAlertDate(CWC_PNEUMOCOCCAL.getName(), patient.dateOfBirth()));
     }
 
     @Test
