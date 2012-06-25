@@ -54,7 +54,8 @@
     </bean>
 
     <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
-    <bean id="aggregationStrategy" class="org.motechproject.ghana.national.repository.AggregationStrategyImpl"/>
+    <bean id="aggregationStrategy" class="org.motechproject.ghana.national.domain.AggregationStrategyImpl"/>
+    <bean id="aggregatedMessageHandlerImpl" class="org.motechproject.ghana.national.domain.AggregatedMessageHandlerImpl"/>
     <bean id="deliveryStrategy" class="org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher"/>
 
     <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
