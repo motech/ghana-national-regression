@@ -48,7 +48,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
     @Autowired
     private ScheduleTracker scheduleTracker;
-    
+
     DataGenerator dataGenerator;
 
     public RegisterClientFromMobileTest() {
@@ -103,7 +103,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
         searchPatientPage.searchWithName(patient.firstName());
         searchPatientPage.displaying(patient);
-        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage,patient);
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
 
         String motechId = patientEditPage.motechId();
 
@@ -138,7 +138,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         ANCEnrollmentPage ancEnrollmentPage = browser.toEnrollANCPage(editPage);
 
-            TestANCEnrollment expectedANCEnrollment = testClientRegistration.getEnrollment()
+        TestANCEnrollment expectedANCEnrollment = testClientRegistration.getEnrollment()
                 .withStaffId(testClientRegistration.getPatient().staffId())
                 .withFacilityId(testClientRegistration.getPatient().facilityId())
                 .withMotechPatientId(patientId)
@@ -165,7 +165,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
                 new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
-                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED","true")
+                new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
         openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
@@ -181,7 +181,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("HEIGHT (CM)", "124.0")
         ));
     }
-    
+
     @Test
     public void shouldCreatePatientWithANCHistoryAndVerifySchedules() {
 
@@ -196,8 +196,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
                 patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER).estimatedDateOfBirth(false).registrationDate(registrationDate);
 
         TestANCEnrollment ancEnrollmentDetails = TestANCEnrollment.create().withEstimatedDateOfDelivery(estimatedDateOfDelivery)
-                                                    .withLastIPT("1").withLastIPTDate(lastIPTDate)
-                                                    .withLastTT("1").withLastTTDate(lastTTDate);
+                .withLastIPT("1").withLastIPTDate(lastIPTDate)
+                .withLastTT("1").withLastTTDate(lastTTDate);
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId).consent(false);
         TestClientRegistration<TestANCEnrollment> testClientRegistration = new TestClientRegistration<TestANCEnrollment>(patient, ancEnrollmentDetails, mmEnrollmentDetails);
 
@@ -212,20 +212,20 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         String patientId = editPage.motechId();
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(ANC_DELIVERY.getName(), Pregnancy.basedOnDeliveryDate(estimatedDateOfDelivery).dateOfConception()));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_DELIVERY.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(ANC_DELIVERY.getName(), Pregnancy.basedOnDeliveryDate(estimatedDateOfDelivery).dateOfConception()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
     }
 
     @Test
-    public void shouldCreatePatientWithCWCRegistrationInfoAndSearchForChild() {
+    public void shouldCreateAndSearchForPatientWithCWCRegistrationInfo() {
         String staffId = staffGenerator.createStaff(browser, homePage);
 
         String motherMotechId = patientGenerator.createPatient(browser, homePage, staffId);
 
         TestPatient patient = TestPatient.with("Second CWC Name" + dataGenerator.randomString(5), staffId).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
-                motherMotechId(motherMotechId).registrationDate(DateUtil.today().plusDays(5)).dateOfBirth(DateUtil.newDate(2010,11,11));
+                motherMotechId(motherMotechId).registrationDate(DateUtil.today().plusDays(5)).dateOfBirth(DateUtil.newDate(2010, 11, 11));
 
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, patient.facilityId());
 
@@ -266,19 +266,19 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
-                new OpenMRSObservationVO("PENTA VACCINATION DOSE","3.0"),
-                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE","2.0"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","VITAMIN A"),
-                new OpenMRSObservationVO("SERIAL NUMBER","serialNumber"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","MEASLES VACCINATION"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","BACILLE CAMILE-GUERIN VACCINATION"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED","YELLOW FEVER VACCINATION"),
-                new OpenMRSObservationVO("ROTAVIRUS","2.0"),
-                new OpenMRSObservationVO("PNEUMOCOCCAL","2.0"),
-                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE","1.0")
+                new OpenMRSObservationVO("PENTA VACCINATION DOSE", "3.0"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "VITAMIN A"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
+                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
+                new OpenMRSObservationVO("ROTAVIRUS", "1.0"),
+                new OpenMRSObservationVO("PNEUMOCOCCAL", "2.0"),
+                new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "2.0")
         ));
     }
-    
+
     @Test
     public void shouldCreatePatientWithCWCPentaAndIPTiHistoryAndVerifySchedules() {
         String staffId = staffGenerator.createStaff(browser, homePage);
@@ -310,8 +310,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
         String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_PENTA.getName()).getAlertAsLocalDate(),today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
     }
 
     @Test
@@ -347,8 +347,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
         String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(CWC_PNEUMOCOCCAL.getName(),lastPneumococcalDate, PneumococcalDose.PNEUMO2.milestoneName()));
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), lastPneumococcalDate, RotavirusDose.ROTAVIRUS2.milestoneName()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_PNEUMOCOCCAL.getName(), lastPneumococcalDate, PneumococcalDose.PNEUMO2.milestoneName()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), lastPneumococcalDate, RotavirusDose.ROTAVIRUS2.milestoneName()));
     }
 
     @Test
@@ -381,16 +381,16 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
         String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(),scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), birthDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), birthDate));
     }
 
     @Test
-    public void shouldCreateSchedulesForPatientTypeOtherWithANC(){
+    public void shouldCreateSchedulesForPatientTypeOtherWithANC() {
         LocalDate registrationDate = today();
         LocalDate estimatedDateOfDelivery = registrationDate.plusMonths(6);
         LocalDate dateOfConception = Pregnancy.basedOnDeliveryDate(estimatedDateOfDelivery).dateOfConception();
         String staffId = staffGenerator.createStaff(browser, homePage);
-        TestPatient testPatient = TestPatient.with("OtherPatient "+dataGenerator.randomString(4),staffId)
+        TestPatient testPatient = TestPatient.with("OtherPatient " + dataGenerator.randomString(4), staffId)
                 .registrationDate(registrationDate).patientType(TestPatient.PATIENT_TYPE.OTHER);
         String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
@@ -400,22 +400,22 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), testANCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
 
-        assertEquals(1,response.getSuccessCount());
+        assertEquals(1, response.getSuccessCount());
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, TT_VACCINATION.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, TT_VACCINATION.getName()),
-                scheduleTracker.firstAlert(TT_VACCINATION.getName(),registrationDate), TT1.getScheduleMilestoneName());
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId,ANC_IPT_VACCINE.getName()),
-                scheduleTracker.firstAlert(ANC_IPT_VACCINE.getName(),dateOfConception), SP1.milestone());
+                scheduleTracker.firstAlert(TT_VACCINATION.getName(), registrationDate), TT1.getScheduleMilestoneName());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, ANC_IPT_VACCINE.getName()),
+                scheduleTracker.firstAlert(ANC_IPT_VACCINE.getName(), dateOfConception), SP1.milestone());
     }
 
     @Test
-    public void shouldCreateSchedulesForPatientTypeOtherWithCWC(){
+    public void shouldCreateSchedulesForPatientTypeOtherWithCWC() {
         LocalDate registrationDate = today();
         LocalDate dateOfBirth = registrationDate.minusDays(2);
 
         String staffId = staffGenerator.createStaff(browser, homePage);
-        TestPatient testPatient = TestPatient.with("OtherPatient "+dataGenerator.randomString(4),staffId)
+        TestPatient testPatient = TestPatient.with("OtherPatient " + dataGenerator.randomString(4), staffId)
                 .registrationDate(registrationDate).patientType(TestPatient.PATIENT_TYPE.OTHER).dateOfBirth(dateOfBirth);
         String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
@@ -424,13 +424,13 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
 
-        assertEquals(1,response.getSuccessCount());
+        assertEquals(1, response.getSuccessCount());
 
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, CWC_OPV_OTHERS.getName()),
                 scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), dateOfBirth), OPVDose.OPV_1.milestoneName());
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId,CWC_IPT_VACCINE.getName()),
-                scheduleTracker.firstAlert(CWC_IPT_VACCINE.getName(),dateOfBirth), IPTiDose.IPTi1.name());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), scheduleTracker.getActiveMilestone(openMRSId, CWC_IPT_VACCINE.getName()),
+                scheduleTracker.firstAlert(CWC_IPT_VACCINE.getName(), dateOfBirth), IPTiDose.IPTi1.name());
     }
 
 }

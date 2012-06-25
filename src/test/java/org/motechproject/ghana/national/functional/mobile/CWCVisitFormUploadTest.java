@@ -108,9 +108,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
 
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "ORAL POLIO VACCINATION DOSE"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
-                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "1.0"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "DEWORMER"),
                 new OpenMRSObservationVO("HOUSE", "32"),
@@ -119,6 +117,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("COMMENTS", "Unknwon"),
                 new OpenMRSObservationVO("COMMUNITY", "Home"),
                 new OpenMRSObservationVO("HEIGHT (CM)", "13.0"),
+                new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "1.0"),
                 new OpenMRSObservationVO("PENTA VACCINATION DOSE", "1.0"),
                 new OpenMRSObservationVO("ROTAVIRUS", "1.0"),
                 new OpenMRSObservationVO("PNEUMOCOCCAL", "1.0"),
