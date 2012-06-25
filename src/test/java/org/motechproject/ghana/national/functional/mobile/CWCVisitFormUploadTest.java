@@ -127,7 +127,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("MALE INVOLVEMENT", "true")
         ));
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), lastOPVDate, OPVDose.OPV_2.milestoneName()));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), visitDate.toLocalDate(), OPVDose.OPV_3.milestoneName()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_PENTA.getName(), visitDate.toLocalDate(), PentaDose.PENTA2.milestoneName()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), visitDate.toLocalDate(), RotavirusDose.ROTAVIRUS2.milestoneName()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_PNEUMOCOCCAL.getName(), visitDate.toLocalDate(), PneumococcalDose.PNEUMO2.milestoneName()));
