@@ -2,9 +2,13 @@ package org.motechproject.ghana.national.functional.data;
 
 import org.motechproject.ghana.national.domain.mobilemidwife.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
+import org.motechproject.model.DayOfWeek;
+import org.motechproject.model.Time;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 public class TestMobileMidwifeEnrollment {
     private String staffId;
@@ -25,6 +29,8 @@ public class TestMobileMidwifeEnrollment {
     private String facility;
     private String country;
     private String status;
+    private DayOfWeek dayOfWeek;
+    private Time timeOfDay;
 
 
     public static TestMobileMidwifeEnrollment with(String staffId){
@@ -49,6 +55,13 @@ public class TestMobileMidwifeEnrollment {
         return enrollment;
     }
 
+    public  TestMobileMidwifeEnrollment withMediumAsVoice(){
+        this.medium(Medium.VOICE.name());
+        this.dayOfWeek(DayOfWeek.Monday);
+        this.timeOfDay(new Time(10,30));
+        return this;
+    }
+
     public static TestMobileMidwifeEnrollment with(String staffId, String facilityId){
         TestMobileMidwifeEnrollment midwifeEnrollment = TestMobileMidwifeEnrollment.with(staffId);
         midwifeEnrollment.facilityId = facilityId;
@@ -69,6 +82,8 @@ public class TestMobileMidwifeEnrollment {
             if(mediumForMobile != null){
                 put("format", mediumForMobile);
             }
+            put("dayOfWeek",safeToString(dayOfWeek));
+            put("timeOfDay",safeToString(timeOfDay));
             put("language", language.getValue());
             put("learnedFrom", learnedFrom.getValue());
             put("reasonToJoin", reasonToJoin.getValue());
@@ -182,6 +197,14 @@ public class TestMobileMidwifeEnrollment {
         return messageStartWeek.getKey();
     }
 
+    public DayOfWeek dayOfWeek(){
+        return this.dayOfWeek;
+    }
+
+    public Time timeOfDay(){
+        return this.timeOfDay;
+    }
+
     public TestMobileMidwifeEnrollment withServiceType(ServiceType serviceType){
         this.serviceType = serviceType;
         return this;
@@ -276,6 +299,16 @@ public class TestMobileMidwifeEnrollment {
         this.patientId = patientId;
         return this;
     }
+    
+    public TestMobileMidwifeEnrollment timeOfDay(Time timeOfDay){
+        this.timeOfDay = timeOfDay;
+        return this;
+    }  
+    
+    public TestMobileMidwifeEnrollment dayOfWeek(DayOfWeek dayOfWeek){
+        this.dayOfWeek= dayOfWeek;
+        return this;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -356,4 +389,6 @@ public class TestMobileMidwifeEnrollment {
 //                ", action='" + action + '\'' +
                 '}';
     }
+
+
 }

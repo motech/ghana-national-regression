@@ -3,12 +3,16 @@ package org.motechproject.ghana.national.functional.pages.patient;
 import org.motechproject.ghana.national.domain.mobilemidwife.MessageStartWeek;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
 import org.motechproject.ghana.national.functional.pages.home.HomePage;
+import org.motechproject.model.DayOfWeek;
+import org.motechproject.model.Time;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
+
+import static org.motechproject.ghana.national.tools.Utility.safeToString;
 
 public class MobileMidwifeEnrollmentPage extends HomePage {
 
@@ -237,6 +241,8 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
     }
 
     public void enroll(TestMobileMidwifeEnrollment testMobileMidwifeEnrollment) {
+        Time time = testMobileMidwifeEnrollment.timeOfDay();
+        DayOfWeek dayOfWeek = testMobileMidwifeEnrollment.dayOfWeek();
         this.withStaffMotechId(testMobileMidwifeEnrollment.staffId())
                 .withConsent(testMobileMidwifeEnrollment.consent())
                 .withCountry(testMobileMidwifeEnrollment.country())
@@ -251,8 +257,12 @@ public class MobileMidwifeEnrollmentPage extends HomePage {
                 .withLanguage(testMobileMidwifeEnrollment.language())
                 .withLearnedFrom(testMobileMidwifeEnrollment.learnedFrom())
                 .withReasonToJoin(testMobileMidwifeEnrollment.reasonToJoin())
-                .withMessageStartWeek(testMobileMidwifeEnrollment.messageStartWeek())
-                .submit();
+                .withMessageStartWeek(testMobileMidwifeEnrollment.messageStartWeek());
+        if (dayOfWeek != null)
+            this.withDayOfWeek(safeToString(dayOfWeek));
+        if (time != null)
+            this.withTime(safeToString(time.getHour()), safeToString(time.getMinute()));
+        this.submit();
     }
 
     private String valueOf(WebElement webElement) {

@@ -144,13 +144,6 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
         assertEquals(enrollmentDetails, mobileMidwifeEnrollmentPage.details());
     }
 
-    private PatientEditPage toPatientEditPage(TestPatient testPatient) {
-        SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.searchWithName(testPatient.firstName());
-        searchPatientPage.displaying(testPatient);
-        return browser.toPatientEditPage(searchPatientPage, testPatient);
-    }
-
     private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {
         SearchPatientPage searchPatientPage = browser.toSearchPatient(basePage);
         searchPatientPage.searchWithName(patient.firstName());
