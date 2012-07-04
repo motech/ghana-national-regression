@@ -40,6 +40,7 @@ import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
 
     private DataGenerator dataGenerator;
+
     @Autowired
     ScheduleTracker scheduleTracker;
 

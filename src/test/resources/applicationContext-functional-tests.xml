@@ -9,36 +9,8 @@
     <context:property-placeholder location="classpath*:*.properties" ignore-unresolvable="true"/>
     <context:annotation-config/>
     <context:spring-configured/>
-    <import resource="classpath*:applicationContext.xml"/>
-
-    <context:component-scan base-package="org.motechproject.ghana.national.messagegateway.domain"/>
-    <context:component-scan base-package="org.motechproject.ghana.national.messagegateway.service"/>
-    <context:component-scan base-package=" org.motechproject.ghana.national.repository"/>
-    <context:component-scan base-package=" org.motechproject.ghana.national.service"/>
-    <context:component-scan base-package=" org.motechproject.ghana.national.functional"/>
-    <context:component-scan base-package=" org.motechproject.deliverytools.outboundendpoint"/>
-    <context:component-scan base-package=" org.motechproject.cmslite.api"/>
-
+    <import resource="classpath:/WEB-INF/classes/applicationContext.xml"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
-    <util:properties id="ghanaNationalProperties" location="classpath:ghana-national.properties"/>
-    <util:properties id="couchdbProperties" location="classpath:couchdb.properties"/>
-    <util:properties id="activemqProperties" location="classpath:activemq.properties"/>
-    <util:properties id="openmrsProperties" location="classpath:openmrs.properties"/>
-
-
-    <import resource="classpath:applicationSchedulerTrackingAPI.xml"/>
-    <import resource="classpath:applicationCmsLiteApi.xml"/>
-    <import resource="classpath:applicationOpenmrsAPI.xml"/>
-    <import resource="classpath:applicationAppointmentsAPI.xml"/>
-    <import resource="classpath:applicationContext-messaging-gateway.xml"/>
-    <import resource="classpath:applicationMessageCampaign.xml"/>
-    <import resource="classpath:applicationContext-email.xml"/>
-    <import resource="classpath:applicationOutboxAPI.xml"/>
-    <import resource="classpath:applicationDecisionTree.xml"/>
-    <import resource="classpath:ivrVerboiceContext.xml"/>
-    <import resource="classpath:applicationScheduler.xml"/>
-    <import resource="classpath:applicationPlatformServerAPI.xml"/>
-
 
     <bean id="openMRSDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -58,15 +30,5 @@
     <bean id="aggregationStrategy" class="org.motechproject.ghana.national.domain.AggregationStrategyImpl"/>
     <bean id="aggregatedMessageHandlerImpl" class="org.motechproject.ghana.national.domain.AggregatedMessageHandlerImpl"/>
     <bean id="deliveryStrategy" class="org.motechproject.ghana.national.messagegateway.domain.NextMondayDispatcher"/>
-
-    <bean id="couchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
-        <constructor-arg ref="httpClient"/>
-    </bean>
-
-    <bean id="couchDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
-        <constructor-arg value="ghana-national"/>
-        <constructor-arg ref="couchDbInstance"/>
-    </bean>
-
     <bean id="identifierGenerator" class="org.motechproject.ghana.national.repository.IdentifierGenerator"/>
 </beans>
