@@ -12,6 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.1.0.RELEASE</spring.version>
         <OPENMRS_PORT>8080</OPENMRS_PORT>
+        <motech-platform.version>0.12-GHANA-NATIONAL-SNAPSHOT</motech-platform.version>
+        <ghana-national.version>1.0-SNAPSHOT</ghana-national.version>
     </properties>
     <dependencies>
         <dependency>
@@ -49,17 +51,17 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-xforms</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${ghana-national.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${ghana-national.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${ghana-national.version}</version>
             <classifier>resources</classifier>
             <type>zip</type>
             <scope>provided</scope>
@@ -101,12 +103,12 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-scheduler</artifactId>
-            <version>0.11-SNAPSHOT</version>
+            <version>${motech-platform.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-web</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${ghana-national.version}</version>
             <type>war</type>
             <scope>test</scope>
         </dependency>
