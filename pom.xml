@@ -100,11 +100,11 @@
             <type>war</type>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-scheduler</artifactId>
-            <version>${motech-platform.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.motechproject</groupId>-->
+            <!--<artifactId>motech-scheduler</artifactId>-->
+            <!--<version>${motech-platform.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-web</artifactId>
@@ -279,7 +279,7 @@
                             <repositoryLayout>default</repositoryLayout>
                             <groupId>org.motechproject.mforms</groupId>
                             <artifactId>epihandy-midp</artifactId>
-                            <version>1.0-SNAPSHOT</version>
+                            <version>${ghana-national.version}</version>
                             <packaging>jar</packaging>
                             <generatePom>true</generatePom>
                         </configuration>
