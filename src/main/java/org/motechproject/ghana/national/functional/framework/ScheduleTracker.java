@@ -7,7 +7,6 @@ import org.motechproject.ghana.national.functional.domain.*;
 import org.motechproject.ghana.national.functional.domain.JobDetail;
 import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
-import org.motechproject.scheduler.MotechSchedulerServiceImpl;
 import org.motechproject.scheduletracking.api.domain.Enrollment;
 import org.motechproject.scheduletracking.api.domain.Milestone;
 import org.motechproject.scheduletracking.api.domain.MilestoneWindow;
@@ -84,7 +83,7 @@ public class ScheduleTracker {
 
     protected List<JobDetail> captureAlertsForNextMilestone(String enrollmentId) {
         final Scheduler scheduler = schedulerFactoryBean.getScheduler();
-        final String jobGroupName = MotechSchedulerServiceImpl.JOB_GROUP_NAME;
+        final String jobGroupName = "default";
         List<JobDetail> alertTriggers = new ArrayList<JobDetail>();
         try {
             Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(jobGroupName));
