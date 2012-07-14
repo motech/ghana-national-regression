@@ -100,11 +100,6 @@
             <type>war</type>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.motechproject</groupId>-->
-            <!--<artifactId>motech-scheduler</artifactId>-->
-            <!--<version>${motech-platform.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>ghana-national-web</artifactId>
@@ -143,8 +138,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -195,6 +190,29 @@
                                      destfile="target/lib/ghana-national-web-1.0-SNAPSHOT.war" update="true"
                                      includes="WEB-INF/classes/applicationContext.xml">
                                 </zip>
+
+                                <condition property="openmrs.directory" value="${user.home}/.OpenMRS"
+                                           else="${user.home}/AppData/Roaming/OpenMRS">
+                                    <os family="unix"/>
+                                </condition>
+
+                                <echo message="removing and creating openmrs directory in ${openmrs.directory}"/>
+                                <delete dir="${openmrs.directory}"/>
+                                <mkdir dir="${openmrs.directory}"/>
+                                <mkdir dir="${openmrs.directory}/modules"/>
+                                <mkdir dir="${openmrs.directory}/reports"/>
+                                <mkdir dir="${openmrs.directory}/reports/datasets"/>
+                                <mkdir dir="${openmrs.directory}/reports/output"/>
+                                <mkdir dir="${openmrs.directory}/reports/output/images"/>
+                                <mkdir dir="${openmrs.directory}/reports/logs"/>
+                                <copy file="${project.build.directory}/generated-resources/openmrs-data/openmrs-runtime.properties"
+                                      tofile="${openmrs.directory}/openmrs-runtime.properties"/>
+                                <copy todir="${openmrs.directory}/modules">
+                                    <fileset
+                                            dir="${project.build.directory}/generated-resources/openmrs-data/modules"/>
+                                </copy>
+                                <get dest="${project.build.directory}/generated-resources/idgen-omod.omod" src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>
+                                <copy file="${project.build.directory}/generated-resources/idgen-omod.omod" tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
                             </target>
                         </configuration>
                         <goals>
@@ -220,7 +238,6 @@
                             <includeArtifactIds>ghana-national-common</includeArtifactIds>
                             <includeGroupIds>org.motechproject</includeGroupIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <includes>xforms/**,ghana-national.properties</includes>
                         </configuration>
                     </execution>
                 </executions>
@@ -238,11 +255,11 @@
                             <contextPath>/openmrs</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                            <war>target/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
+                            <war>${project.build.directory}/lib/motech-delivery-tools-web-0.3-SNAPSHOT.war</war>
                             <contextPath>/deliverytools</contextPath>
                         </contextHandler>
                         <contextHandler implementation="org.mortbay.jetty.webapp.WebAppContext">
-                            <war>target/lib/ghana-national-web-1.0-SNAPSHOT.war</war>
+                            <war>${project.build.directory}/lib/ghana-national-web-1.0-SNAPSHOT.war</war>
                             <contextPath>/ghana-national-web</contextPath>
                         </contextHandler>
                     </contextHandlers>
