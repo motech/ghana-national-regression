@@ -196,23 +196,10 @@
                                     <os family="unix"/>
                                 </condition>
 
-                                <echo message="removing and creating openmrs directory in ${openmrs.directory}"/>
-                                <delete dir="${openmrs.directory}"/>
-                                <mkdir dir="${openmrs.directory}"/>
-                                <mkdir dir="${openmrs.directory}/modules"/>
-                                <mkdir dir="${openmrs.directory}/reports"/>
-                                <mkdir dir="${openmrs.directory}/reports/datasets"/>
-                                <mkdir dir="${openmrs.directory}/reports/output"/>
-                                <mkdir dir="${openmrs.directory}/reports/output/images"/>
-                                <mkdir dir="${openmrs.directory}/reports/logs"/>
-                                <copy file="${project.build.directory}/generated-resources/openmrs-data/openmrs-runtime.properties"
-                                      tofile="${openmrs.directory}/openmrs-runtime.properties"/>
-                                <copy todir="${openmrs.directory}/modules">
-                                    <fileset
-                                            dir="${project.build.directory}/generated-resources/openmrs-data/modules"/>
-                                </copy>
-                                <get dest="${project.build.directory}/generated-resources/idgen-omod.omod" src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>
-                                <copy file="${project.build.directory}/generated-resources/idgen-omod.omod" tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
+                                <get dest="${project.build.directory}/generated-resources/idgen-omod.omod"
+                                     src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>
+                                <copy file="${project.build.directory}/generated-resources/idgen-omod.omod"
+                                      tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
                             </target>
                         </configuration>
                         <goals>
@@ -323,32 +310,6 @@
                     </snapshots>
                 </repository>
             </repositories>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.9</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <functional.test.display>:2</functional.test.display>
-                            </systemPropertyVariables>
-                            <includes>
-                                <include>**/functional/**/*Test.java</include>
-                            </includes>
-                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 </project>
