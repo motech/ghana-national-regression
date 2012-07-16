@@ -196,10 +196,25 @@
                                     <os family="unix"/>
                                 </condition>
 
-                                <!--<get dest="${project.build.directory}/generated-resources/idgen-omod.omod"-->
-                                     <!--src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>-->
-                                <!--<copy file="${project.build.directory}/generated-resources/idgen-omod.omod"-->
-                                      <!--tofile="${openmrs.directory}/modules/idgen-omod.omod"/>-->
+                                <echo message="removing and creating openmrs directory in ${openmrs.directory}"/>
+                                <delete dir="${openmrs.directory}"/>
+                                <mkdir dir="${openmrs.directory}"/>
+                                <mkdir dir="${openmrs.directory}/modules"/>
+                                <mkdir dir="${openmrs.directory}/reports"/>
+                                <mkdir dir="${openmrs.directory}/reports/datasets"/>
+                                <mkdir dir="${openmrs.directory}/reports/output"/>
+                                <mkdir dir="${openmrs.directory}/reports/output/images"/>
+                                <mkdir dir="${openmrs.directory}/reports/logs"/>
+                                <copy file="${project.build.directory}/generated-resources/openmrs-data/openmrs-runtime.properties"
+                                      tofile="${openmrs.directory}/openmrs-runtime.properties"/>
+                                <copy todir="${openmrs.directory}/modules">
+                                    <fileset dir="${project.build.directory}/generated-resources/openmrs-data/modules"/>
+                                </copy>
+
+                                <get dest="${project.build.directory}/generated-resources/idgen-omod.omod"
+                                     src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>
+                                <copy file="${project.build.directory}/generated-resources/idgen-omod.omod"
+                                      tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
                             </target>
                         </configuration>
                         <goals>
