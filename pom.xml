@@ -196,10 +196,10 @@
                                     <os family="unix"/>
                                 </condition>
 
-                                <get dest="${project.build.directory}/generated-resources/idgen-omod.omod"
-                                     src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>
-                                <copy file="${project.build.directory}/generated-resources/idgen-omod.omod"
-                                      tofile="${openmrs.directory}/modules/idgen-omod.omod"/>
+                                <!--<get dest="${project.build.directory}/generated-resources/idgen-omod.omod"-->
+                                     <!--src="http://nexus.motechproject.org/content/repositories/snapshots/org/motechproject/idgen-omod/1.0-SNAPSHOT/idgen-omod-1.0-SNAPSHOT.jar"/>-->
+                                <!--<copy file="${project.build.directory}/generated-resources/idgen-omod.omod"-->
+                                      <!--tofile="${openmrs.directory}/modules/idgen-omod.omod"/>-->
                             </target>
                         </configuration>
                         <goals>
