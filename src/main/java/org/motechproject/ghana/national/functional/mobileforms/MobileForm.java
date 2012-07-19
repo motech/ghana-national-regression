@@ -63,6 +63,10 @@ public class MobileForm {
         return new MobileForm("NurseDataEntry", "tt-visit-template.xml");
     }
 
+    public static MobileForm pregnancyTerminationForm() {
+        return new MobileForm("NurseDataEntry", "pregnancy-termination-template.xml");
+    }
+
     public static MobileForm queryClientForm() {
         return new MobileForm("NurseQuery", "client-query-template.xml");
     }
