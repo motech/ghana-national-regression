@@ -14,6 +14,7 @@ import org.motechproject.ghana.national.domain.Patient;
 import org.motechproject.ghana.national.exception.FacilityAlreadyFoundException;
 import org.motechproject.ghana.national.exception.PatientIdIncorrectFormatException;
 import org.motechproject.ghana.national.exception.PatientIdNotUniqueException;
+import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.domain.QueryTestDataProvider;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.handlers.GeneralQueryFormHandler;
@@ -64,7 +65,7 @@ import static org.motechproject.util.DateUtil.newDateTime;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
-public class GeneralQueryFormHandlerIT {
+public class GeneralQueryFormHandlerIT extends OpenMRSAwareFunctionalTest {
     @Autowired
     EnrollmentsQueryService enrollmentsQueryService;
 
@@ -121,12 +122,6 @@ public class GeneralQueryFormHandlerIT {
     @BeforeMethod
     public void setUp() throws FacilityAlreadyFoundException, PatientIdIncorrectFormatException, PatientIdNotUniqueException {
         initMocks(this);
-        generalQueryFormHandler = new GeneralQueryFormHandler();
-        ReflectionTestUtils.setField(generalQueryFormHandler, "smsGateway", mockSMSGateway);
-        ReflectionTestUtils.setField(generalQueryFormHandler, "enrollmentsQueryService", enrollmentsQueryService);
-        ReflectionTestUtils.setField(generalQueryFormHandler, "appointmentService", appointmentService);
-        ReflectionTestUtils.setField(generalQueryFormHandler, "facilityService", facilityService);
-        ReflectionTestUtils.setField(generalQueryFormHandler, "patientService", patientService);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(new UsernamePasswordAuthenticationToken(OpenMRSSession.login(userName, password), password));
         openMRSSession.open();
@@ -147,6 +142,12 @@ public class GeneralQueryFormHandlerIT {
             patient1234566_InFacility2 = createPatientAndAddToMap("1234566", facility2);
             patient1234567_InFacility2 = createPatientAndAddToMap("1234567", facility2);
         }
+        generalQueryFormHandler = new GeneralQueryFormHandler();
+        ReflectionTestUtils.setField(generalQueryFormHandler, "smsGateway", mockSMSGateway);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "enrollmentsQueryService", enrollmentsQueryService);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "appointmentService", appointmentService);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "facilityService", facilityService);
+        ReflectionTestUtils.setField(generalQueryFormHandler, "patientService", patientService);
     }
 
     private Patient createPatientAndAddToMap(String motechId, Facility facility) throws PatientIdIncorrectFormatException, PatientIdNotUniqueException {
@@ -357,17 +358,28 @@ public class GeneralQueryFormHandlerIT {
         testData.addToDueWindow(patient1234560_InFacility1, CWC_PENTA.getName(), null);
         testData.addToLateWindow(patient1234565_InFacility1, CWC_PENTA.getName(), "Penta2");
 
+        testData.addToDueWindow(patient1234565_InFacility1, CWC_ROTAVIRUS.getName(), null);
+        testData.addToLateWindow(patient1234560_InFacility1, CWC_ROTAVIRUS.getName(), "Rotavirus2");
+        testData.addToDueWindow(patient1234560_InFacility1, CWC_PNEUMOCOCCAL.getName(), "Pneumo2");
+        testData.addToLateWindow(patient1234565_InFacility1, CWC_PNEUMOCOCCAL.getName(), "Pneumo2");
+
         String responsePhoneNumber = "0542319876";
         GeneralQueryType generalQueryType = GeneralQueryType.CWC_DEFAULTERS;
         String message = submitForFacility(responsePhoneNumber,
                 generalQueryType, facility1);
-        assertTrue(message,message.contains("List of CWC Defaulters-IPTi,OPV0,OPV1,OPV2,OPV3,Penta"));
+        assertTrue(message,message.contains("List of CWC Defaulters-IPTi, OPV0, OPV1,OPV2,OPV3, Penta, Pneumococcal, Rotavirus"));
         assertMessageFor("1234562", "IPTi2", message);
         assertNoMessageFor(asList("1234560"), "IPTi1", message);
         assertNoMessageFor(asList("1234562"), "OPV0", message);
         assertMessageFor("1234560", "OPV3", message);
         assertNoMessageFor(asList("1234560"), "Penta1", message);
         assertMessageFor("1234565", "Penta2", message);
+
+        assertNoMessageFor(asList("1234565"), "Rotavirus1", message);
+//        assertMessageFor("1234560", "Rotavirus2", message);
+
+        assertNoMessageFor(asList("1234560"), "Pneumo2", message);
+//        assertMessageFor("1234565", "Pneumo2", message);
     }
 
 
