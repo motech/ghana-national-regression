@@ -61,7 +61,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
 
         LocalDate estimatedDateOfDelivery = today().plusMonths(6);
         LocalDate registrationDate = today().minusDays(4);
-        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withStaffId(staffId)
+        TestANCEnrollment ancEnrollment = TestANCEnrollment.createWithoutHistory().withStaffId(staffId)
                 .withRegistrationToday(RegistrationToday.IN_PAST).withRegistrationDate(registrationDate).withEstimatedDateOfDelivery(estimatedDateOfDelivery);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
 
@@ -74,6 +74,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
 
         final LocalDate nextANCVisitDate = today().plusWeeks(6);
         XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
+        assertEquals(1,xformResponse.getSuccessCount());
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
 

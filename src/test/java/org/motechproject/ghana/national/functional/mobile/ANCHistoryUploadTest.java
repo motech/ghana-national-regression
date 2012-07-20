@@ -23,8 +23,15 @@ import static org.testng.Assert.assertEquals;
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class ANCHistoryUploadTest extends LoggedInUserFunctionalTest {
 
+    private PatientEditPage toPatientEditPage(TestPatient testPatient) {
+        SearchPatientPage searchPatientPage = browser.toSearchPatient();
+        searchPatientPage.searchWithName(testPatient.firstName());
+        searchPatientPage.displaying(testPatient);
+        return browser.toPatientEditPage(searchPatientPage, testPatient);
+    }
+
     @Test
-    public void shouldUnRegisterExistingMobileMidWifeWhileANCRegistration_MediumAsVoice() {
+    public void shouldNotUnRegisterExistingMobileMidWifeWhileANCRegistration() {
         DataGenerator dataGenerator = new DataGenerator();
 
         String staffId = staffGenerator.createStaff(browser, homePage);
@@ -47,41 +54,6 @@ public class ANCHistoryUploadTest extends LoggedInUserFunctionalTest {
         PatientEditPage patientPageAfterEdit = toPatientEditPage(testPatient);
         mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPageAfterEdit);
 
-        assertThat(mobileMidwifeEnrollmentPage.status(), is("INACTIVE"));
-    }
-
-    @Test
-    public void shouldUnRegisterExisitngMobileMidWifeWhileANCRegistration_MediumAsSMS() {
-        DataGenerator dataGenerator = new DataGenerator();
-
-        String staffId = staffGenerator.createStaff(browser, homePage);
-
-        TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
-                .patientType(TestPatient.PATIENT_TYPE.PREGNANT_MOTHER)
-                .estimatedDateOfBirth(false);
-
-        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
-
-        PatientEditPage patientEditPage = toPatientEditPage(testPatient);
-        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
-        mobileMidwifeEnrollmentPage.enroll(TestMobileMidwifeEnrollment.with(staffId));
-
-        TestANCEnrollment ancEnrollment = TestANCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
-
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerANCForm(), ancEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
-        assertEquals(1, response.getSuccessCount());
-
-        PatientEditPage patientPageAfterEdit = toPatientEditPage(testPatient);
-        mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPageAfterEdit);
-
-        assertThat(mobileMidwifeEnrollmentPage.status(), is("INACTIVE"));
-    }
-
-
-    private PatientEditPage toPatientEditPage(TestPatient testPatient) {
-        SearchPatientPage searchPatientPage = browser.toSearchPatient();
-        searchPatientPage.searchWithName(testPatient.firstName());
-        searchPatientPage.displaying(testPatient);
-        return browser.toPatientEditPage(searchPatientPage, testPatient);
+        assertThat(mobileMidwifeEnrollmentPage.status(), is("ACTIVE"));
     }
 }

@@ -143,34 +143,6 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldUnRegisterExistingMobileMidWifeWhileCWCRegistration() {
-
-        String staffId = staffGenerator.createStaff(browser, homePage);
-
-        TestPatient testPatient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId)
-                .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
-                .estimatedDateOfBirth(false)
-                .dateOfBirth(DateUtil.newDate(DateUtil.today().getYear() - 1, 11, 11));
-
-        String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
-
-        PatientEditPage patientEditPage = toPatientEditPage(testPatient);
-        MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientEditPage);
-        mobileMidwifeEnrollmentPage.enroll(TestMobileMidwifeEnrollment.with(staffId));
-
-        TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId);
-
-        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
-        assertEquals(1, response.getSuccessCount());
-
-        PatientEditPage patientPageAfterEdit = toPatientEditPage(testPatient);
-        mobileMidwifeEnrollmentPage = browser.toMobileMidwifeEnrollmentForm(patientPageAfterEdit);
-
-
-        assertThat(mobileMidwifeEnrollmentPage.status(), is("INACTIVE"));
-    }
-
-    @Test
     public void shouldCreatePentaRotavirusAndPneumococcalScheduleDuringCWCRegistrationIfTheTodayFallsWithin10WeeksFromDateOfBirth() {
         String staffId = staffGenerator.createStaff(browser, homePage);
         TestPatient patient = TestPatient.with("name", staffId).dateOfBirth(today().minusWeeks(5)).patientType(CHILD_UNDER_FIVE);
