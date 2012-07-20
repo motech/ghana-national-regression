@@ -79,7 +79,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         final String serialNumber = "serialNumber";
         final LocalDate visitDate = DateUtil.today();
         final LocalDate dateOfBirth = new LocalDate(2000, 12, 12);
-        final LocalDate nhisExpires = new LocalDate(2012, 12, 12);
+        final LocalDate nhisExpires = DateUtil.today().plusMonths(5);
         final String nhis = "nhis";
 
         final XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
