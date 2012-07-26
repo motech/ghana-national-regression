@@ -5,10 +5,7 @@ import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.CwcCareHistory;
-import org.motechproject.ghana.national.domain.IPTiDose;
-import org.motechproject.ghana.national.domain.OPVDose;
-import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.*;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
@@ -33,6 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,9 +104,10 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
         String patientId = patientGenerator.createPatient(testPatient, browser, homePage);
 
-        LocalDate registrationDate = DateUtil.today().plusDays(10);
+        LocalDate registrationDate = DateUtil.today();
         TestCWCEnrollment cwcEnrollment = TestCWCEnrollment.create().withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(registrationDate)
-                                            .withLastPneumococcal("1").withLastPneumococcalDate(registrationDate.minusWeeks(3));
+                                            .withLastPneumococcal("1").withHistoryDays3WeeksBeforeRegistrationDate(3);
+
         TestMobileMidwifeEnrollment mmEnrollmentDetails = TestMobileMidwifeEnrollment.with(staffId, testPatient.facilityId()).patientId(patientId);
 
         Map<String, String> data = cwcEnrollment.withMobileMidwifeEnrollmentThroughMobile(mmEnrollmentDetails);
@@ -192,7 +191,9 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 .withRegistrationDate(registrationDate).withAddHistory(true).withAddCareHistory(asList(CwcCareHistory.PENTA,CwcCareHistory.IPTI,CwcCareHistory.OPV))
                 .withLastIPTi("1").withLastIPTiDate(DateUtil.newDate(2012, 4, 16))
                 .withLastPenta("1").withLastPentaDate(DateUtil.newDate(2012, 4, 16))
-                .withLastOPV("1").withLastOPVDate(DateUtil.newDate(2012, 4, 16));
+                .withLastOPV("1").withLastOPVDate(DateUtil.newDate(2012, 4, 16))
+                .withLastPneumococcal("1").withLastPneumococcalDate(DateUtil.newDate(2012, 4, 16))
+                .withLastRotavirus("1").withLastRotavirusDate(DateUtil.newDate(2012, 4, 16));
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
         assertThat(join(response.getErrors(), on(XformHttpClient.Error.class).toString()), response.getErrors().size(), is(equalTo(0)));
@@ -200,6 +201,8 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_IPT_VACCINE.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), today().plusWeeks(1));
     }
 
     @Test
@@ -215,7 +218,14 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId).withMotechPatientId(patientId)
                 .withRegistrationDate(testPatient.getRegistrationDate())
                 .withLastIPTi("1").withLastIPTiDate(dateOfBirth.plusDays(10))
-                .withLastOPV("1").withLastOPVDate(dateOfBirth.plusDays(2));
+                .withLastOPV("1").withLastOPVDate(dateOfBirth.plusDays(2))
+                .withLastPneumococcal("1").withLastPneumococcalDate(dateOfBirth.plusDays(2))
+                .withLastRotavirus("1").withLastRotavirusDate(dateOfBirth.plusDays(2))
+                .withLastPenta("1").withLastPentaDate(dateOfBirth.plusDays(2))
+                .withLastYellowFeverDate(null)
+                .withLastMeaslesDate(null)
+                .withLastBcgDate(null)
+                .withLastVitaminADate(null);
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), testCWCEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
 
@@ -226,6 +236,10 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 today().plusWeeks(1), IPTiDose.IPTi2.milestoneName());
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), Utility.getNextOf(OPVDose.byValue(testCWCEnrollment.getLastOPV())).name(),
                 today().plusWeeks(1), OPVDose.OPV_2.name());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), Utility.getNextOf(PneumococcalDose.byValue(Integer.parseInt(testCWCEnrollment.getLastPneumococcal()))).name(),
+                today().plusWeeks(1), PneumococcalDose.PNEUMO2.name());
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, ScheduleNames.CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), Utility.getNextOf(RotavirusDose.byValue(Integer.parseInt(testCWCEnrollment.getLastRotavirus()))).name(),
+                today().plusWeeks(1), RotavirusDose.ROTAVIRUS2.name());
     }
 
     @Test
