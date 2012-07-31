@@ -133,4 +133,63 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), visitDate.toLocalDate(), RotavirusDose.ROTAVIRUS2.milestoneName()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_PNEUMOCOCCAL.getName(), visitDate.toLocalDate(), PneumococcalDose.PNEUMO2.milestoneName()));
     }
+
+    @Test
+    public void shouldCreateCWCVisitWithNonMandatoryFields() {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String facilityId = facilityGenerator.createFacility(browser, homePage);
+        String patientFirstName = "First Name" + dataGenerator.randomString(5);
+        final PatientPage patientPage = browser.toCreatePatient(homePage);
+        final DateTime visitDate = DateUtil.now();
+        final TestPatient patient = TestPatient.with(patientFirstName, staffId)
+                .patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE)
+                .estimatedDateOfBirth(false)
+                .dateOfBirth(visitDate.minusYears(2).toLocalDate());
+        patientPage.create(patient);
+        SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
+        searchPatientPage.searchWithName(patient.firstName());
+        PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
+        LocalDate lastOPVDate = DateUtil.today().minusWeeks(2);
+        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId)
+                .withMotechPatientId(patientEditPage.motechId())
+                .withAddCareHistory(asList(CwcCareHistory.YF, CwcCareHistory.BCG, CwcCareHistory.OPV))
+                .withLastYellowFeverDate(visitDate.toLocalDate())
+                .withLastBcgDate(visitDate.toLocalDate())
+                .withLastOPV("1")
+                .withLastOPVDate(lastOPVDate);
+        final CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
+        cwcEnrollmentPage.save(testCWCEnrollment);
+
+        final String motechId = cwcEnrollmentPage.getPatientMotechId();
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.cwcVisitForm(), new HashMap<String, String>() {{
+            put("staffId", staffId);
+            put("facilityId", facilityId);
+            put("date", visitDate.toString(forPattern("yyyy-MM-dd")));
+            put("motechId", motechId);
+            put("serialNumber", "1234567");
+            put("immunizations", "NONGIVEN");
+            put("maleInvolved", "Y");
+            put("cwcLocation", "2");
+            put("house", "32");
+            put("community", "Home");
+            put("comments", "Unknwon");
+        }});
+
+        assertEquals(0, response.getErrors().size());
+
+        String openMRSId = openMRSDB.getOpenMRSId(motechId);
+        OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSId);
+        String encounterId = openMRSPatientPage.chooseEncounter("CWCVISIT");
+
+        OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
+        openMRSEncounterPage.displaying(asList(
+                new OpenMRSObservationVO("HOUSE", "32"),
+                new OpenMRSObservationVO("CWC LOCATION", "2.0"),
+                new OpenMRSObservationVO("COMMENTS", "Unknwon"),
+                new OpenMRSObservationVO("COMMUNITY", "Home"),
+                new OpenMRSObservationVO("SERIAL NUMBER", "1234567"),
+                new OpenMRSObservationVO("MALE INVOLVEMENT", "true")
+        ));
+
+    }
 }
