@@ -91,7 +91,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
     }
 
     @Test
-    public void shouldUnenrollFromMobileMidwife_IVRService() throws Exception {
+    public void shouldNotUnenrollFromMobileMidwifeOnlyIfMotherIsAlive_IVRService() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
@@ -135,7 +135,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
         assertEquals(1, response.getSuccessCount());
 
         MobileMidwifeEnrollmentPage mobileMidwifeEnrollmentPage = toMobileMidwifeEnrollmentPage(patient, homePage);
-        assertEquals(enrollmentDetails.status("INACTIVE").toString(), mobileMidwifeEnrollmentPage.details().toString());
+        assertEquals(enrollmentDetails.status("ACTIVE").toString(), mobileMidwifeEnrollmentPage.details().toString());
     }
 
     private MobileMidwifeEnrollmentPage toMobileMidwifeEnrollmentPage(TestPatient patient, BasePage basePage) {

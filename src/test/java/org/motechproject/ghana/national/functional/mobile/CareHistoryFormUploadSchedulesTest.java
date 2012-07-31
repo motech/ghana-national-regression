@@ -18,8 +18,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.functional.helper.ScheduleHelper.assertAlertDate;
+import static org.motechproject.util.DateUtil.isOnOrAfter;
 import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
 
@@ -90,7 +93,8 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
                 .withMotechPatientId(patientId).withStaffId(staffId).withRegistrationDate(dateOfBirth)
                 .withAddHistory(true).withLastOPV("1").withLastOPVDate(dateOfBirth);
 
-        mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.registerCWCForm(), cwcEnrollment.withoutMobileMidwifeEnrollmentThroughMobile());
+        assertThat(response.getFailureCount(), is(0));
         Assert.assertNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_0.getName()));
         Assert.assertNotNull(scheduleTracker.activeEnrollment(openMRSId, CWC_OPV_OTHERS.getName()));
     }

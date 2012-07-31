@@ -119,7 +119,8 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("addHistory", booleanCodeForAddHistory(addHistory));
             List<String> concatenatedCareHistories = new ArrayList<String>();
             for (CwcCareHistory history : addCareHistory) {
-                concatenatedCareHistories.add(history.name());
+                if (recorded(history))
+                    concatenatedCareHistories.add(history.name());
             }
             put("addCareHistory", StringUtils.join(concatenatedCareHistories, ","));
             put("bcgDate", safe(lastBcgDate));
@@ -129,7 +130,7 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("yellowFeverDate", safe(lastYellowFeverDate));
             put("lastPentaDate", safe(lastPentaDate));
             put("lastRotavirusDate", safe(lastRotavirusDate));
-            put("lastPneumococcalDate", safe(lastRotavirusDate));
+            put("lastPneumococcalDate", safe(lastPneumococcalDate));
             put("measlesDate", safe(lastMeaslesDate));
             put("lastPenta", lastPenta);
             put("lastRotavirus", lastRotavirus);
@@ -139,6 +140,28 @@ public class TestCWCEnrollment implements CareEnrollment {
 
         }};
 
+    }
+
+    private boolean recorded(CwcCareHistory history) {
+        if (CwcCareHistory.BCG.equals(history))
+            return lastBcgDate != null;
+        if (CwcCareHistory.IPTI.equals(history))
+            return lastIPTiDate != null;
+        if (CwcCareHistory.MEASLES.equals(history))
+            return lastMeaslesDate != null;
+        if (CwcCareHistory.OPV.equals(history))
+            return lastOPVDate != null;
+        if (CwcCareHistory.PENTA.equals(history))
+            return lastPentaDate != null;
+        if (CwcCareHistory.PNEUMOCOCCAL.equals(history))
+            return lastPneumococcalDate != null;
+        if (CwcCareHistory.ROTAVIRUS.equals(history))
+            return lastRotavirusDate != null;
+        if (CwcCareHistory.VITA_A.equals(history))
+            return lastVitaminADate != null;
+        if (CwcCareHistory.YF.equals(history))
+            return lastYellowFeverDate != null;
+        return false;
     }
 
     private String safe(LocalDate date) {
@@ -219,6 +242,10 @@ public class TestCWCEnrollment implements CareEnrollment {
         lastVitaminADate = null;
         lastMeaslesDate = null;
         lastYellowFeverDate = null;
+        lastRotavirus = null;
+        lastRotavirusDate = null;
+        lastPneumococcal = null;
+        lastPneumococcalDate = null;
         return this;
     }
 
@@ -302,6 +329,14 @@ public class TestCWCEnrollment implements CareEnrollment {
     public TestCWCEnrollment withLastRotavirusDate(LocalDate lastRotavirusDate) {
         this.lastRotavirusDate = lastRotavirusDate;
         return this;
+    }
+
+    public LocalDate getLastRotavirusDate() {
+        return lastRotavirusDate;
+    }
+
+    public String getLastRotavirus() {
+        return lastRotavirus;
     }
 
     public LocalDate getLastMeaslesDate() {
@@ -410,6 +445,19 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public Boolean hasYellowFeverHistory() {
         return addCareHistory.contains(CwcCareHistory.YF);
+    }
+
+    public TestCWCEnrollment withHistoryDays3WeeksBeforeRegistrationDate(int weeks) {
+        this.withLastPneumococcalDate(registrationDate.minusWeeks(weeks))
+                .withLastMeaslesDate(registrationDate.minusWeeks(weeks))
+                .withLastPentaDate(registrationDate.minusWeeks(weeks))
+                .withLastYellowFeverDate(registrationDate.minusWeeks(weeks))
+                .withLastIPTiDate(registrationDate.minusWeeks(weeks))
+                .withLastOPVDate(registrationDate.minusWeeks(weeks))
+                .withLastRotavirusDate(registrationDate.minusWeeks(weeks))
+                .withLastVitaminADate(registrationDate.minusWeeks(weeks))
+                .withLastBcgDate(registrationDate.minusWeeks(weeks));
+        return this;
     }
 }
 

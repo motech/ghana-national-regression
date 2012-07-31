@@ -53,7 +53,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
         SearchPatientPage searchPatientPage = browser.toSearchPatient(homePage);
         searchPatientPage.searchWithName(patient.firstName());
 
-        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId);
+        TestCWCEnrollment testCWCEnrollment = TestCWCEnrollment.create().withStaffId(staffId).withRegistrationDate(DateUtil.today()).withHistoryDays3WeeksBeforeRegistrationDate(3);
 
         PatientEditPage patientEditPage = browser.toPatientEditPage(searchPatientPage, patient);
         CWCEnrollmentPage cwcEnrollmentPage = browser.toEnrollCWCPage(patientEditPage);
@@ -65,7 +65,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
         cwcEnrollmentPage.displaying(testCWCEnrollment);
 
         // edit
-        testCWCEnrollment.withAddCareHistory(Arrays.asList(CwcCareHistory.MEASLES)).withLastMeaslesDate(DateUtil.newDate(2006, 12, 2));
+        testCWCEnrollment.withAddCareHistory(Arrays.asList(CwcCareHistory.MEASLES)).withLastMeaslesDate(testCWCEnrollment.getRegistrationDate().minusDays(3));
         cwcEnrollmentPage.save(testCWCEnrollment);
 
         patientEditPage = searchPatient(patientFirstName, patient, cwcEnrollmentPage);

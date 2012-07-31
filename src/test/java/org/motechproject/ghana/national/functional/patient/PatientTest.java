@@ -11,6 +11,7 @@ import org.motechproject.ghana.national.functional.pages.patient.PatientPage;
 import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.repository.IdentifierGenerator;
+import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -70,7 +71,7 @@ public class PatientTest extends OpenMRSAwareFunctionalTest{
         TestPatient patient = TestPatient.with("First Name" + dataGenerator.randomString(5), staffId).
                 registrationMode(TestPatient.PATIENT_REGN_MODE.USE_PREPRINTED_ID).
                 patientType(TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE).estimatedDateOfBirth(false).
-                motechId(identifierGenerator.newPatientId());
+                motechId(identifierGenerator.newPatientId()).dateOfBirth(DateUtil.today().minusMonths(3));
         patientPage.create(patient);
         SearchPatientPage searchPatientPage = browser.toSearchPatient(patientPage);
         String motechId = patient.motechId();
