@@ -25,7 +25,7 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
 
     @Test
-    public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsNotAVisitor() throws Exception {
+    public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsRegistered() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
         final String patientId = patientGenerator.createPatient(browser, homePage, staffId);
@@ -37,7 +37,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
-            put("visitor", "N");
+            put("registered", "Y");
             put("motechId", patientId);
             put("serialNumber", serialNumber);
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
@@ -55,6 +55,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         }}));
 
         assertEquals(1, response.getSuccessCount());
+        assertEquals(0, response.getErrors().size());
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSDB.getOpenMRSId(patientId));
         String encounterId = openMRSPatientPage.chooseEncounter("OUTPATIENTVISIT");
@@ -73,7 +74,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
-    public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsAVisitor() throws Exception {
+    public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsNotRegistered() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
         final String serialNumber = "serialNumber";
@@ -89,7 +90,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
             put("serialNumber", serialNumber);
             put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
-            put("visitor", "Y");
+            put("registered", "N");
             put("dateOfBirth", dateOfBirth.toString(forPattern("yyyy-MM-dd")));
             put("insured", "Y");
             put("nhis", nhis);
@@ -106,5 +107,41 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         }}));
 
         assertEquals(1, response.getSuccessCount());
+        assertEquals(0, response.getErrors().size());
+    }
+
+    @Test
+    public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsAVisitorWithoutNhisDetails() throws Exception {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String facilityId = facilityGenerator.createFacility(browser, homePage);
+        final String serialNumber = "serialNumber";
+        final LocalDate visitDate = DateUtil.today();
+        final LocalDate dateOfBirth = new LocalDate(2000, 12, 12);
+
+        final XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", new HashMap<String, String>() {{
+            put("staffId", staffId);
+            put("facilityId", facilityId);
+            put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
+            put("serialNumber", serialNumber);
+            put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
+            put("registered", "Y");
+            put("dateOfBirth", dateOfBirth.toString(forPattern("yyyy-MM-dd")));
+            put("insured", "Y");
+            put("nhis", "");
+            put("nhisExpires", "");
+            put("newCase", "Y");
+            put("newPatient", "Y");
+            put("diagnosis", "78");
+            put("otherDiagnosis", "10");
+            put("otherSecondaryDiagnosis", "42");
+            put("gender", "M");
+            put("rdtGiven", "Y");
+            put("rdtPositive", "Y");
+            put("referred", "Y");
+        }}));
+
+        assertEquals(1, response.getSuccessCount());
+        assertEquals(0, response.getErrors().size());
     }
 }
