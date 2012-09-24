@@ -11,6 +11,7 @@
     <context:spring-configured/>
     <import resource="classpath:/WEB-INF/classes/applicationContext.xml"/>
     <util:properties id="functionalTestProperties" location="classpath:functional-test.properties"/>
+    <util:properties id="openmrsProperties" location="classpath:openmrs.properties"/>
 
     <bean id="openMRSDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>

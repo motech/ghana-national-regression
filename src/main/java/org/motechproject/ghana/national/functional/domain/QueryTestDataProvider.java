@@ -70,11 +70,11 @@ public class QueryTestDataProvider {
         PatientWindow windowPatient = getWindowForSchedule(scheduleName);
         LocalDate referenceDate = referenceDateToStartInAWindowInAMileStone(scheduleName, windowName, milestoneName);
         if (milestoneName == null) {
-            allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
-                    referenceDate, null, null, null, milestoneName, patient.facilityMetaData()));
+            allCareSchedules.enroll(new EnrollmentRequest().setExternalId(patient.getMRSPatientId()).setScheduleName(scheduleName)
+                    .setReferenceDate(referenceDate).setStartingMilestoneName(milestoneName).setMetadata(patient.facilityMetaData()));
         } else
-            allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
-                    null, null, referenceDate, null, milestoneName, patient.facilityMetaData()));
+            allCareSchedules.enroll(new EnrollmentRequest().setExternalId(patient.getMRSPatientId()).setScheduleName(scheduleName)
+                    .setEnrollmentDate(referenceDate).setStartingMilestoneName(milestoneName).setMetadata(patient.facilityMetaData()));
         windowPatient.addPatient(windowName, patient);
 
         data.put(scheduleName, windowPatient);

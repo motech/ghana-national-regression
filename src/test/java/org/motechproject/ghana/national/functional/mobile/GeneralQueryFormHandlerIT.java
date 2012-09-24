@@ -384,8 +384,8 @@ public class GeneralQueryFormHandlerIT extends OpenMRSAwareFunctionalTest {
 
 
     private void enrollToASchedule(Patient patient, LocalDate referenceDate, String scheduleName) {
-        allCareSchedules.enroll(new EnrollmentRequest(patient.getMRSPatientId(), scheduleName, null,
-                referenceDate, null, null, null, null, patient.facilityMetaData()));
+        allCareSchedules.enroll(new EnrollmentRequest().setExternalId(patient.getMRSPatientId()).setScheduleName(scheduleName)
+                .setReferenceDate(referenceDate).setMetadata(patient.facilityMetaData()));
     }
 
     private String submitForFacility(String responsePhoneNumber, GeneralQueryType generalQueryType, Facility facility) {
@@ -397,9 +397,8 @@ public class GeneralQueryFormHandlerIT extends OpenMRSAwareFunctionalTest {
 
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockSMSGateway).dispatchSMS(eq(responsePhoneNumber), messageCaptor.capture());
-        String message = messageCaptor.getValue();
 
-        return message;
+        return messageCaptor.getValue();
 
     }
 
