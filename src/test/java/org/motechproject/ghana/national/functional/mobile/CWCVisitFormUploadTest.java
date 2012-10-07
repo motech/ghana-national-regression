@@ -84,6 +84,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("facilityId", facilityId);
             put("date", visitDate.toString(forPattern("yyyy-MM-dd")));
             put("motechId", motechId);
+            put("visitor", "N");
             put("serialNumber", "1234567");
             put("immunizations", "BCG,OPV,YF,DEWORMER,ROTAVIRUS,PNEUMOCOCCAL");
             put("opvdose", "2");
@@ -132,6 +133,36 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PENTA.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_PENTA.getName(), visitDate.toLocalDate(), PentaDose.PENTA2.milestoneName()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), visitDate.toLocalDate(), RotavirusDose.ROTAVIRUS2.milestoneName()));
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_PNEUMOCOCCAL.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_PNEUMOCOCCAL.getName(), visitDate.toLocalDate(), PneumococcalDose.PNEUMO2.milestoneName()));
+    }
+
+    @Test
+    public void shouldUploadVisitorForm() {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String facilityId = facilityGenerator.createFacility(browser, homePage);
+        final DateTime visitDate = DateUtil.now();
+        XformHttpClient.XformResponse response = mobile.upload(MobileForm.cwcVisitForm(), new HashMap<String, String>() {{
+            put("staffId", staffId);
+            put("facilityId", facilityId);
+            put("date", visitDate.toString(forPattern("yyyy-MM-dd")));
+            put("visitor", "Y");
+            put("serialNumber", "1234567");
+            put("immunizations", "BCG,OPV,YF,DEWORMER,ROTAVIRUS,PNEUMOCOCCAL");
+            put("opvdose", "2");
+            put("pentadose", "1");
+            put("iptidose", "1");
+            put("rotavirusdose", "1");
+            put("pneumococcaldose", "1");
+            put("weight", "23");
+            put("muac", "12");
+            put("height", "13");
+            put("maleInvolved", "Y");
+            put("cwcLocation", "2");
+            put("house", "32");
+            put("community", "Home");
+            put("comments", "Unknwon");
+        }});
+
+        assertEquals(0, response.getErrors().size());
     }
 
     @Test

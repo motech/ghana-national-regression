@@ -19,7 +19,11 @@ import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPa
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.scheduler.MotechSchedulerServiceImpl;
 import org.motechproject.util.DateUtil;
-import org.quartz.*;
+import org.quartz.CronTrigger;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -29,7 +33,11 @@ import org.testng.annotations.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -73,8 +81,8 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage.save(ancEnrollment);
 
         final LocalDate nextANCVisitDate = today().plusWeeks(6);
-        XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, nextANCVisitDate);
-        assertEquals(1,xformResponse.getSuccessCount());
+        XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, testPatient.facilityId(), ancEnrollmentPage.getMotechPatientId(), nextANCVisitDate, "N");
+        assertEquals(1, xformResponse.getSuccessCount());
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, nextANCVisitDate.minusWeeks(1).toDate(),
                 nextANCVisitDate.toDate(), nextANCVisitDate.plusWeeks(1).toDate(), nextANCVisitDate.plusWeeks(2).toDate());
 
@@ -127,18 +135,20 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         ancEnrollmentPage = browser.toEnrollANCPage(patientEditPage);
 
         LocalDate newANCVisitDate = DateUtil.today().plusDays(35);
-        xformResponse = createAncVisit(staffId, testPatient, ancEnrollmentPage, newANCVisitDate);
+        xformResponse = createAncVisit(staffId, testPatient.facilityId(), ancEnrollmentPage.getMotechPatientId(), newANCVisitDate, "N");
         verifyAncVisitSchedules(ancEnrollmentPage, xformResponse, newANCVisitDate.minusWeeks(1).toDate(),
                 newANCVisitDate.toDate(), newANCVisitDate.plusWeeks(1).toDate(), newANCVisitDate.plusWeeks(2).toDate());
     }
 
-    private XformHttpClient.XformResponse createAncVisit(final String staffId, final TestPatient testPatient, final ANCEnrollmentPage ancEnrollmentPage, final LocalDate nextANCVisitDate) {
+    private XformHttpClient.XformResponse createAncVisit(final String staffId, final String facilityId,
+                                                         final String motechPatientId, final LocalDate nextANCVisitDate, final String visitor) {
         final LocalDate updatedEDD = today().plusMonths(5);
         return mobile.upload(MobileForm.ancVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
-            put("facilityId", testPatient.facilityId());
-            put("motechId", ancEnrollmentPage.getMotechPatientId());
-            put("date",new SimpleDateFormat("yyyy-MM-dd").format(today().toDate()));
+            put("facilityId", facilityId);
+            put("visitor", visitor);
+            put("motechId", motechPatientId);
+            put("date", new SimpleDateFormat("yyyy-MM-dd").format(today().toDate()));
             put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(updatedEDD.toDate()));
             put("serialNumber", "4ds65");
             put("visitNumber", "4");
@@ -173,32 +183,39 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         }});
     }
 
-    private void verifyAncVisitSchedules(ANCEnrollmentPage ancEnrollmentPage, XformHttpClient.XformResponse xformResponse, Date minDate, Date dueDate, Date lateDate1, Date lateDate2) throws SchedulerException {
+    @Test
+    public void shouldUploadVisitorForm() {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String facilityId = facilityGenerator.createFacility(browser, homePage);
+        final LocalDate nextANCVisitDate = today().plusWeeks(6);
+        XformHttpClient.XformResponse xformResponse = createAncVisit(staffId, facilityId, null, nextANCVisitDate, "Y");
+        assertEquals(1, xformResponse.getSuccessCount());
+    }
+
+    private void verifyAncVisitSchedules(ANCEnrollmentPage ancEnrollmentPage, XformHttpClient.XformResponse xformResponse,
+                                         Date minDate, Date dueDate, Date lateDate1, Date lateDate2) throws SchedulerException {
         assertEquals(1, xformResponse.getSuccessCount());
         List<CronTrigger> cronTriggers = captureAlertsForNextMilestone(ancEnrollmentPage.getMotechPatientId());
         assertEquals(4, cronTriggers.size());
-        CronTrigger dueTrigger=null;
-        CronTrigger lateTrigger1=null;
-        CronTrigger lateTrigger2=null;
-        CronTrigger lateTrigger3=null;
+        CronTrigger dueTrigger = null;
+        CronTrigger lateTrigger1 = null;
+        CronTrigger lateTrigger2 = null;
+        CronTrigger lateTrigger3 = null;
 
         for (CronTrigger cronTrigger : cronTriggers) {
-            if(cronTrigger.getJobKey().getName().contains("ANCVISIT0")){
-                dueTrigger=cronTrigger;
-            }if(cronTrigger.getJobKey().getName().contains("ANCVISIT1")){
-                lateTrigger1=cronTrigger;
-            }if(cronTrigger.getJobKey().getName().contains("ANCVISIT2")){
-                lateTrigger2=cronTrigger;
-            }if(cronTrigger.getJobKey().getName().contains("ANCVISIT3")){
-                lateTrigger3=cronTrigger;
+            if (cronTrigger.getJobKey().getName().contains("ANCVISIT0")) {
+                dueTrigger = cronTrigger;
+            }
+            if (cronTrigger.getJobKey().getName().contains("ANCVISIT1")) {
+                lateTrigger1 = cronTrigger;
+            }
+            if (cronTrigger.getJobKey().getName().contains("ANCVISIT2")) {
+                lateTrigger2 = cronTrigger;
+            }
+            if (cronTrigger.getJobKey().getName().contains("ANCVISIT3")) {
+                lateTrigger3 = cronTrigger;
             }
         }
-
-//
-//        List<CronTrigger> dueTrigger =  Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT0")),cronTriggers);
-//        List<CronTrigger> lateTrigger1 =Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT1")), cronTriggers);
-//        List<CronTrigger> lateTrigger2 =Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT2")), cronTriggers);
-//        List<CronTrigger> lateTrigger3 =Lambda.filter(having(on(CronTrigger.class).getJobKey().getName(), containsString("ANCVISIT3")), cronTriggers);
 
         assertThat(dueTrigger.getNextFireTime(), is(minDate));
         assertThat(lateTrigger1.getNextFireTime(), is(dueDate));

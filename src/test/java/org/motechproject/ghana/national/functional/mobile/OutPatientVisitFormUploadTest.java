@@ -83,8 +83,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         final LocalDate nhisExpires = DateUtil.today().plusMonths(5);
         final String nhis = "nhis";
 
-        final XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
-                "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", new HashMap<String, String>() {{
+        HashMap<String, String> data = new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
@@ -104,10 +103,18 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("rdtGiven", "Y");
             put("rdtPositive", "Y");
             put("referred", "Y");
-        }}));
+        }};
+        XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", data));
 
         assertEquals(1, response.getSuccessCount());
         assertEquals(0, response.getErrors().size());
+
+        //If the same form gets updated again, then it should fail as 'duplicate form' error
+        response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", data));
+
+        assertEquals(1, response.getErrors().size());
     }
 
     @Test
