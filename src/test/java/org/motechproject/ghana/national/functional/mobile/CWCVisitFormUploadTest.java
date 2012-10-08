@@ -202,6 +202,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("maleInvolved", "Y");
             put("cwcLocation", "2");
             put("house", "32");
+            put("visitor", "N");
             put("community", "Home");
             put("comments", "Unknwon");
         }});

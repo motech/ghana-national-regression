@@ -5,7 +5,12 @@ import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
-import org.motechproject.ghana.national.domain.*;
+import org.motechproject.ghana.national.domain.CwcCareHistory;
+import org.motechproject.ghana.national.domain.IPTiDose;
+import org.motechproject.ghana.national.domain.OPVDose;
+import org.motechproject.ghana.national.domain.PneumococcalDose;
+import org.motechproject.ghana.national.domain.RegistrationToday;
+import org.motechproject.ghana.national.domain.RotavirusDose;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
 import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
 import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
@@ -30,7 +35,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +44,15 @@ import static ch.lambdaj.Lambda.on;
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_0;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_OTHERS;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PNEUMOCOCCAL;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_ROTAVIRUS;
 import static org.motechproject.ghana.national.functional.data.TestPatient.PATIENT_TYPE.CHILD_UNDER_FIVE;
 import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
@@ -131,9 +142,9 @@ public class RegisterCWCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PENTA VACCINATION DOSE", "3.0"),
                 new OpenMRSObservationVO("INTERMITTENT PREVENTATIVE TREATMENT INFANTS DOSE", "2.0"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "VITAMIN A"),
+                new OpenMRSObservationVO("VITAMIN A", "blue"),
                 new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
+                new OpenMRSObservationVO("MEASLES VACCINATION", "1.0"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
                 new OpenMRSObservationVO("ORAL POLIO VACCINATION DOSE", "1.0"),

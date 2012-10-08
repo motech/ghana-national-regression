@@ -1,6 +1,5 @@
 package org.motechproject.ghana.national.functional.mobile;
 
-import org.apache.commons.collections.MapUtils;
 import org.joda.time.LocalDate;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
@@ -9,7 +8,11 @@ import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.PneumococcalDose;
 import org.motechproject.ghana.national.domain.RotavirusDose;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
-import org.motechproject.ghana.national.functional.data.*;
+import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
+import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
+import org.motechproject.ghana.national.functional.data.TestClientRegistration;
+import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
+import org.motechproject.ghana.national.functional.data.TestPatient;
 import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.helper.ScheduleHelper;
@@ -17,7 +20,11 @@ import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
-import org.motechproject.ghana.national.functional.pages.patient.*;
+import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
+import org.motechproject.ghana.national.functional.pages.patient.CWCEnrollmentPage;
+import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
+import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
+import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.util.DateUtil;
@@ -27,19 +34,21 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_OTHERS;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PNEUMOCOCCAL;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_ROTAVIRUS;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
 import static org.motechproject.ghana.national.domain.IPTDose.SP1;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT1;
 import static org.motechproject.util.DateUtil.today;
 import static org.testng.Assert.assertEquals;
-import static org.testng.AssertJUnit.assertNull;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -53,42 +62,6 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
 
     public RegisterClientFromMobileTest() {
         this.dataGenerator = new DataGenerator();
-    }
-
-    @Test
-    public void shouldCheckForMandatoryFields() throws Exception {
-
-        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerClientForm(), MapUtils.EMPTY_MAP);
-
-        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
-        assertEquals(errors.size(), 1);
-        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
-
-        assertThat(errorsMap.get("registrationMode"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("registrantType"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("firstName"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("lastName"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("dateOfBirth"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("estimatedBirthDate"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("insured"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("date"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("address"), hasItem("is mandatory"));
-        assertThat(errorsMap.get("facilityId"), hasItem("not found"));
-        assertThat(errorsMap.get("staffId"), hasItem("not found"));
-    }
-
-    @Test
-    public void shouldGiveErrorForFirstNameIfNotGiven() throws Exception {
-
-        final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.registerClientForm(), new HashMap<String, String>() {{
-            put("firstName", "Joe");
-        }});
-
-        final List<XformHttpClient.Error> errors = xformResponse.getErrors();
-        assertEquals(errors.size(), 1);
-        final Map<String, List<String>> errorsMap = errors.iterator().next().getErrors();
-        assertNull(errorsMap.get("firstName"));
     }
 
     @Test
@@ -268,8 +241,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PENTA VACCINATION DOSE", "3.0"),
                 new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "VITAMIN A"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION"),
+                new OpenMRSObservationVO("VITAMIN A", "blue"),
+                new OpenMRSObservationVO("MEASLES VACCINATION", "1.0"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "BACILLE CAMILE-GUERIN VACCINATION"),
                 new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "YELLOW FEVER VACCINATION"),
                 new OpenMRSObservationVO("ROTAVIRUS", "1.0"),
@@ -381,7 +354,8 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         PatientEditPage editPage = browser.toPatientEditPage(searchPatientPage, patient);
         String openMRSId = openMRSDB.getOpenMRSId(editPage.motechId());
 
-        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), birthDate));
+        ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_OPV_OTHERS.getName()).getAlertAsLocalDate(),
+                scheduleTracker.firstAlert(CWC_OPV_OTHERS.getName(), birthDate));
     }
 
     @Test

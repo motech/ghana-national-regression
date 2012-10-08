@@ -47,7 +47,7 @@ public class PNCMotherFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("date", visitDate);
             put("motechId", patientId);
             put("visitNumber", "2");
-            put("vitaminA", "Y");
+            put("vitaminA", "blue");
             put("ttDose", "1");
             put("location", "2");
             put("house", "house");
@@ -72,7 +72,7 @@ public class PNCMotherFormUploadTest extends OpenMRSAwareFunctionalTest {
                 new OpenMRSObservationVO("FUNDAL HEIGHT", "22.0"),
                 new OpenMRSObservationVO("HOUSE", "house"),
                 new OpenMRSObservationVO("COMMUNITY", "community"),
-                new OpenMRSObservationVO("VITAMIN A", "1.0"),
+                new OpenMRSObservationVO("VITAMIN A", "blue"),
                 new OpenMRSObservationVO("LOCHIA COLOUR", "1.0"),
                 new OpenMRSObservationVO("LOCHIA EXCESS AMOUNT", "true"),
                 new OpenMRSObservationVO("LOCHIA FOUL ODOUR", "true"),

@@ -153,6 +153,22 @@ public class CWCEnrollmentPage extends HomePage {
     @CacheLookup
     private WebElement lastIPTi1;
 
+    @FindBy(id = "lastVitaminA1")
+    @CacheLookup
+    private WebElement lastVitaminA1;
+
+    @FindBy(id = "lastVitaminA2")
+    @CacheLookup
+    private WebElement lastVitaminA2;
+
+    @FindBy(id = "lastMeasles1")
+    @CacheLookup
+    private WebElement lastMeasles1;
+
+    @FindBy(id = "lastMeasles2")
+    @CacheLookup
+    private WebElement lastMeasles2;
+
     @FindBy(id = "lastIPTi2")
     @CacheLookup
     private WebElement lastIPTi2;
@@ -371,6 +387,24 @@ public class CWCEnrollmentPage extends HomePage {
         return "-1";
     }
 
+    public String getLastMeasles() {
+        if (lastMeasles1.isSelected()) {
+            return "1";
+        } else if (lastMeasles2.isSelected()) {
+            return "2";
+        }
+        return "-1";
+    }
+
+    public String getLastVitaminA() {
+        if (lastVitaminA1.isSelected()) {
+            return "blue";
+        } else if (lastVitaminA2.isSelected()) {
+            return "red";
+        }
+        return "NA";
+    }
+
     public String getLastPenta() {
         if (lastPenta1.isSelected()) {
             return "1";
@@ -408,6 +442,8 @@ public class CWCEnrollmentPage extends HomePage {
         assertThat(nullSafeInteger(getLastIPTi()), is(cwcEnrollmentDetails.getLastIPTi()));
         assertThat(nullSafeInteger(getLastOPV()), is(cwcEnrollmentDetails.getLastOPV()));
         assertThat(nullSafeInteger(getLastPenta()), is(cwcEnrollmentDetails.getLastPenta()));
+        assertThat(nullSafeInteger(getLastMeasles()), is(cwcEnrollmentDetails.getLastMeasles()));
+        assertThat(getLastVitaminA(), is(cwcEnrollmentDetails.getLastVitaminA()));
     }
 
     public String nullSafeDateFormatting(LocalDate date){

@@ -42,6 +42,8 @@ public class TestCWCEnrollment implements CareEnrollment {
     private String facility;
     private LocalDate lastPneumococcalDate;
     private String lastPneumococcal;
+    private String lastVitaminA;
+    private String lastMeasles;
 
     public static TestCWCEnrollment create() {
         return createWithoutHistory().addHistoryDetails();
@@ -62,6 +64,8 @@ public class TestCWCEnrollment implements CareEnrollment {
         this.lastOPV = "1";
         this.lastIPTi = "2";
         this.lastPenta = "3";
+        this.lastVitaminA = "blue";
+        this.lastMeasles = "1";
         this.lastRotavirus = "1";
         this.lastPneumococcal = "2";
         return this;
@@ -132,6 +136,8 @@ public class TestCWCEnrollment implements CareEnrollment {
             put("lastRotavirusDate", safe(lastRotavirusDate));
             put("lastPneumococcalDate", safe(lastPneumococcalDate));
             put("measlesDate", safe(lastMeaslesDate));
+            put("lastMeasles", lastMeasles);
+            put("lastVitaminA", lastVitaminA);
             put("lastPenta", lastPenta);
             put("lastRotavirus", lastRotavirus);
             put("lastPneumococcal", lastPneumococcal);
@@ -370,6 +376,14 @@ public class TestCWCEnrollment implements CareEnrollment {
         return lastPenta;
     }
 
+    public String getLastMeasles() {
+        return lastMeasles;
+    }
+
+    public String getLastVitaminA() {
+        return lastVitaminA;
+    }
+
     public TestCWCEnrollment withLastPenta(String lastPenta) {
         this.lastPenta = lastPenta;
         return this;
@@ -459,6 +473,8 @@ public class TestCWCEnrollment implements CareEnrollment {
                 .withLastBcgDate(registrationDate.minusWeeks(weeks));
         return this;
     }
+
+
 }
 
 

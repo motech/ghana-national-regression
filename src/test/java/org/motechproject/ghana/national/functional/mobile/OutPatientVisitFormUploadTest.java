@@ -118,6 +118,42 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     @Test
+    public void shouldUploadOutPatientVisitFormSuccessfullyForReviewAsDiagnosis() throws Exception {
+        final String staffId = staffGenerator.createStaff(browser, homePage);
+        final String facilityId = facilityGenerator.createFacility(browser, homePage);
+        final String serialNumber = "serialNumber";
+        final LocalDate visitDate = DateUtil.today();
+        final LocalDate dateOfBirth = new LocalDate(2000, 12, 12);
+        final LocalDate nhisExpires = DateUtil.today().plusMonths(5);
+        final String nhis = "nhis";
+
+        HashMap<String, String> data = new HashMap<String, String>() {{
+            put("staffId", staffId);
+            put("facilityId", facilityId);
+            put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
+            put("serialNumber", serialNumber);
+            put("visitDate", visitDate.toString(forPattern("yyyy-MM-dd")));
+            put("registered", "N");
+            put("dateOfBirth", dateOfBirth.toString(forPattern("yyyy-MM-dd")));
+            put("insured", "Y");
+            put("nhis", nhis);
+            put("nhisExpires", nhisExpires.toString(forPattern("yyyy-MM-dd")));
+            put("newCase", "Y");
+            put("newPatient", "Y");
+            put("diagnosis", "77");
+            put("gender", "M");
+            put("rdtGiven", "Y");
+            put("rdtPositive", "Y");
+            put("referred", "Y");
+        }};
+        XformHttpClient.XformResponse response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", data));
+
+        assertEquals(1, response.getSuccessCount());
+        assertEquals(0, response.getErrors().size());
+    }
+
+    @Test
     public void shouldUploadOutPatientVisitFormSuccessfullyIfPatientIsAVisitorWithoutNhisDetails() throws Exception {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String facilityId = facilityGenerator.createFacility(browser, homePage);
