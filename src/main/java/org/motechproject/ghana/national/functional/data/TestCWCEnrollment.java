@@ -245,6 +245,7 @@ public class TestCWCEnrollment implements CareEnrollment {
         lastOPVDate = null;
         lastPenta = null;
         lastPentaDate = null;
+        lastVitaminA = null;
         lastVitaminADate = null;
         lastMeaslesDate = null;
         lastYellowFeverDate = null;
@@ -279,6 +280,11 @@ public class TestCWCEnrollment implements CareEnrollment {
 
     public TestCWCEnrollment withLastVitaminADate(LocalDate lastVitaminADate) {
         this.lastVitaminADate = lastVitaminADate;
+        return this;
+    }
+
+    public TestCWCEnrollment withLastVitaminA(String lastVitaminA) {
+        this.lastVitaminA = lastVitaminA;
         return this;
     }
 

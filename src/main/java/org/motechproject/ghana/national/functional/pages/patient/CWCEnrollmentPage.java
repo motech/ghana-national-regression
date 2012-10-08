@@ -402,7 +402,7 @@ public class CWCEnrollmentPage extends HomePage {
         } else if (lastVitaminA2.isSelected()) {
             return "red";
         }
-        return "NA";
+        return null;
     }
 
     public String getLastPenta() {
@@ -446,11 +446,11 @@ public class CWCEnrollmentPage extends HomePage {
         assertThat(getLastVitaminA(), is(cwcEnrollmentDetails.getLastVitaminA()));
     }
 
-    public String nullSafeDateFormatting(LocalDate date){
-        return date == null? "": date.toString(DateTimeFormat.forPattern("dd/MM/yyyy"));
+    public String nullSafeDateFormatting(LocalDate date) {
+        return date == null ? "" : date.toString(DateTimeFormat.forPattern("dd/MM/yyyy"));
     }
 
-    public String nullSafeInteger(String value){
+    public String nullSafeInteger(String value) {
         return "-1".equals(value) ? null : value;
     }
 
@@ -473,28 +473,30 @@ public class CWCEnrollmentPage extends HomePage {
                 .withHasMeaslesHistory(enrollment.hasMeaslesHistory())
                 .withHasYellowFeverHistory(enrollment.hasYellowFeverHistory());
 
-        if(enrollment.hasBcgHistory()){
+        if (enrollment.hasBcgHistory()) {
             withBcgDate(enrollment.getLastBcgDate());
         }
-        if(enrollment.hasIPTiHistory()){
+        if (enrollment.hasIPTiHistory()) {
             withLastIPTiDate(enrollment.getLastIPTiDate())
-                .withLastIPTi(enrollment.getLastIPTi());
+                    .withLastIPTi(enrollment.getLastIPTi());
         }
-        if(enrollment.hasOPVHistory()){
+        if (enrollment.hasOPVHistory()) {
             withLastOPVDate(enrollment.getLastOPVDate())
-                .withLastOPV(enrollment.getLastOPV());
+                    .withLastOPV(enrollment.getLastOPV());
         }
-        if(enrollment.hasPentaHistory()){
+        if (enrollment.hasPentaHistory()) {
             withLastPentaDate(enrollment.getLastPentaDate())
-                .withLastPenta(enrollment.getLastPenta());
+                    .withLastPenta(enrollment.getLastPenta());
         }
-        if(enrollment.hasVitaminAHistory()){
-            withLastVitaminADate(enrollment.getLastVitaminADate());
+        if (enrollment.hasVitaminAHistory()) {
+            withLastVitaminADate(enrollment.getLastVitaminADate())
+            .withLastVitaminA(enrollment.getLastVitaminA());
         }
-        if(enrollment.hasMeaslesHistory()) {
-            withMeaslesDate(enrollment.getLastMeaslesDate());
+        if (enrollment.hasMeaslesHistory()) {
+            withMeaslesDate(enrollment.getLastMeaslesDate())
+            .withLastMeasles(enrollment.getLastMeasles());
         }
-        if(enrollment.hasYellowFeverHistory()) {
+        if (enrollment.hasYellowFeverHistory()) {
             withYellowFeverDate(enrollment.getLastYellowFeverDate());
         }
         submit();
@@ -568,6 +570,24 @@ public class CWCEnrollmentPage extends HomePage {
             lastIPTi2.click();
         } else if ("3".equals(lastIPTi)) {
             lastIPTi3.click();
+        }
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastMeasles(String measles) {
+        if ("1".equals(measles)) {
+            lastMeasles1.click();
+        } else if ("2".equals(measles)) {
+            lastMeasles2.click();
+        }
+        return this;
+    }
+
+    private CWCEnrollmentPage withLastVitaminA(String vitaminA) {
+        if ("blue".equals(vitaminA)) {
+            lastVitaminA1.click();
+        } else if ("red".equals(vitaminA)) {
+            lastVitaminA2.click();
         }
         return this;
     }

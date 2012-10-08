@@ -79,7 +79,7 @@ public class CWCTest extends OpenMRSAwareFunctionalTest {
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("SERIAL NUMBER", "serialNumber"),
-                new OpenMRSObservationVO("IMMUNIZATIONS ORDERED", "MEASLES VACCINATION")
+                new OpenMRSObservationVO("MEASLES VACCINATION", "1.0")
         ));
     }
 
