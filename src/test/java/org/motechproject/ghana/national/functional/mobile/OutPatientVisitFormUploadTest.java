@@ -115,6 +115,14 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
                 "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", data));
 
         assertEquals(1, response.getErrors().size());
+
+        //If the same form gets updated again, but with the visit date in a different month then it should pass
+        data.put("visitDate", visitDate.minusDays(50).toString(forPattern("yyyy-MM-dd")));
+        response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
+                "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", data));
+
+        assertEquals(0, response.getErrors().size());
+        assertEquals(1, response.getSuccessCount());
     }
 
     @Test
