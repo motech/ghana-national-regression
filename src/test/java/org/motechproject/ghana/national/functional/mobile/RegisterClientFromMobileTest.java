@@ -1,7 +1,6 @@
 package org.motechproject.ghana.national.functional.mobile;
 
 import org.joda.time.LocalDate;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.motechproject.ghana.national.configuration.ScheduleNames;
 import org.motechproject.ghana.national.domain.IPTiDose;
@@ -9,11 +8,7 @@ import org.motechproject.ghana.national.domain.OPVDose;
 import org.motechproject.ghana.national.domain.PneumococcalDose;
 import org.motechproject.ghana.national.domain.RotavirusDose;
 import org.motechproject.ghana.national.functional.OpenMRSAwareFunctionalTest;
-import org.motechproject.ghana.national.functional.data.TestANCEnrollment;
-import org.motechproject.ghana.national.functional.data.TestCWCEnrollment;
-import org.motechproject.ghana.national.functional.data.TestClientRegistration;
-import org.motechproject.ghana.national.functional.data.TestMobileMidwifeEnrollment;
-import org.motechproject.ghana.national.functional.data.TestPatient;
+import org.motechproject.ghana.national.functional.data.*;
 import org.motechproject.ghana.national.functional.framework.ScheduleTracker;
 import org.motechproject.ghana.national.functional.framework.XformHttpClient;
 import org.motechproject.ghana.national.functional.helper.ScheduleHelper;
@@ -21,11 +16,7 @@ import org.motechproject.ghana.national.functional.mobileforms.MobileForm;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSEncounterPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.OpenMRSPatientPage;
 import org.motechproject.ghana.national.functional.pages.openmrs.vo.OpenMRSObservationVO;
-import org.motechproject.ghana.national.functional.pages.patient.ANCEnrollmentPage;
-import org.motechproject.ghana.national.functional.pages.patient.CWCEnrollmentPage;
-import org.motechproject.ghana.national.functional.pages.patient.MobileMidwifeEnrollmentPage;
-import org.motechproject.ghana.national.functional.pages.patient.PatientEditPage;
-import org.motechproject.ghana.national.functional.pages.patient.SearchPatientPage;
+import org.motechproject.ghana.national.functional.pages.patient.*;
 import org.motechproject.ghana.national.functional.util.DataGenerator;
 import org.motechproject.ghana.national.vo.Pregnancy;
 import org.motechproject.util.DateUtil;
@@ -38,14 +29,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_DELIVERY;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.ANC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_IPT_VACCINE;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_OPV_OTHERS;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PENTA;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_PNEUMOCOCCAL;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.CWC_ROTAVIRUS;
-import static org.motechproject.ghana.national.configuration.ScheduleNames.TT_VACCINATION;
+import static org.motechproject.ghana.national.configuration.ScheduleNames.*;
 import static org.motechproject.ghana.national.domain.IPTDose.SP1;
 import static org.motechproject.ghana.national.domain.TTVaccineDosage.TT1;
 import static org.motechproject.util.DateUtil.today;
@@ -325,8 +309,7 @@ public class RegisterClientFromMobileTest extends OpenMRSAwareFunctionalTest {
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId, CWC_ROTAVIRUS.getName()).getAlertAsLocalDate(), scheduleTracker.firstAlert(CWC_ROTAVIRUS.getName(), lastPneumococcalDate, RotavirusDose.ROTAVIRUS2.milestoneName()));
     }
 
-    @Test
-    @Ignore("Need to check.")
+    @Test(enabled = false)
     public void shouldCreatePatientWithCWCOPVHistoryAndVerifySchedules() {
         String staffId = staffGenerator.createStaff(browser, homePage);
 
