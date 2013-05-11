@@ -54,9 +54,9 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
         final String staffId = staffGenerator.createStaff(browser, homePage);
         final String patientId = patientGenerator.createPatient(browser, homePage, staffId);
         String openMRSId = openMRSDB.getOpenMRSId(patientId);
-        final String ttDate = new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 1, 1).toDate());
-        final String iptDate = new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2011, 12, 15).toDate());
-        final String date = new SimpleDateFormat("yyyy-MM-dd").format(DateUtil.newDate(2012, 1, 15).toDate());
+        final String ttDate = new SimpleDateFormat("M/d/y H:m:s").format(DateUtil.newDate(2012, 1, 1).toDate());
+        final String iptDate = new SimpleDateFormat("M/d/y H:m:s").format(DateUtil.newDate(2011, 12, 15).toDate());
+        final String date = new SimpleDateFormat("M/d/y H:m:s").format(DateUtil.newDate(2012, 1, 15).toDate());
 
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.careHistoryForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
@@ -132,7 +132,7 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     private String dateToString(LocalDate date) {
-        return date.toString(forPattern("yyyy-MM-dd"));
+        return date.toString(forPattern("M/d/y H:m:s"));
     }
 
 

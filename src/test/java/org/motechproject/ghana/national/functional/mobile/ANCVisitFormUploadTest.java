@@ -148,8 +148,8 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("facilityId", facilityId);
             put("visitor", visitor);
             put("motechId", motechPatientId);
-            put("date", new SimpleDateFormat("yyyy-MM-dd").format(today().toDate()));
-            put("estDeliveryDate", new SimpleDateFormat("yyyy-MM-dd").format(updatedEDD.toDate()));
+            put("date", new SimpleDateFormat("M/d/y H:m:s").format(today().toDate()));
+            put("estDeliveryDate", new SimpleDateFormat("M/d/y H:m:s").format(updatedEDD.toDate()));
             put("serialNumber", "4ds65");
             put("visitNumber", "4");
             put("bpDiastolic", "67");
@@ -179,7 +179,7 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("community", "community");
             put("referred", "Y");
             put("maleInvolved", "N");
-            put("nextANCDate", new SimpleDateFormat("yyyy-MM-dd").format(nextANCVisitDate.toDate()));
+            put("nextANCDate", new SimpleDateFormat("M/d/y H:m:s").format(nextANCVisitDate.toDate()));
         }});
     }
 
@@ -245,6 +245,6 @@ public class ANCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
     }
 
     private String formatDate(LocalDate date) {
-        return new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(date.toDate());
+        return new SimpleDateFormat("M/d/y H:m:s").format(date.toDate());
     }
 }

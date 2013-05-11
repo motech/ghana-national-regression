@@ -196,7 +196,7 @@ public class XformHttpClient {
         if (question == null) return;
         final String answer = (String) question.getAnswer();
         if (answer == null) return;
-        formData.setDateValue(variableName, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a").parse(answer));
+        formData.setDateValue(variableName, new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(answer));
     }
 
     private static XformResponse processResponse(HttpConnection httpConnection) throws IOException {
