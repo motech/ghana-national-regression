@@ -71,6 +71,7 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("lastTTDate", ttDate);
         }});
 
+
         assertEquals(1, response.getSuccessCount());
 
         OpenMRSPatientPage openMRSPatientPage = openMRSBrowser.toOpenMRSPatientPage(openMRSId);
