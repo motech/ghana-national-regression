@@ -92,7 +92,7 @@ public class TestCWCEnrollment implements CareEnrollment {
         Map<String, String> enrollmentDetails = forMobile();
         updateFieldName(enrollmentDetails, "addCareHistory", "addChildHistory");
         updateFieldName(enrollmentDetails, "serialNumber", "cwcRegNumber");
-        updateFieldByNameAndValue(enrollmentDetails, "registrationDate", "date", patient.getRegistrationDate().toString(DateTimeFormat.forPattern("M/d/y H:m:s")));
+        updateFieldByNameAndValue(enrollmentDetails, "registrationDate", "date", patient.getRegistrationDate().toString(DateTimeFormat.forPattern("M/d/y")));
         enrollmentDetails.put("staffId", patient.staffId());
         enrollmentDetails.put("facilityId", patient.facilityId());
         enrollmentDetails.put("motechId", patient.motechId());
@@ -171,7 +171,7 @@ public class TestCWCEnrollment implements CareEnrollment {
     }
 
     private String safe(LocalDate date) {
-        return nullSafeToString(date, "M/d/y H:m:s");
+        return nullSafeToString(date, "M/d/y");
     }
 
     public String booleanCodeForAddHistory(boolean value) {

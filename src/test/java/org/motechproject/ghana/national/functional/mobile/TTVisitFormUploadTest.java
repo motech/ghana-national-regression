@@ -35,7 +35,7 @@ public class TTVisitFormUploadTest extends OpenMRSAwareFunctionalTest{
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("motechId", patientId);
-            put("date", visitDate.toString(forPattern("M/d/y H:m:s")));
+            put("date", visitDate.toString(forPattern("M/d/y")));
             put("ttDose","1");
         }});
 

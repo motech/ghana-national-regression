@@ -42,7 +42,7 @@ public class DeliveryNotificationFormUploadTest extends OpenMRSAwareFunctionalTe
             put("staffId", staffId);
             put("motechId", motechId);
             put("facilityId", facilityId);
-            put("datetime", new SimpleDateFormat("M/d/y H:m:s").format(DateUtil.today().minusDays(2).toDate()));
+            put("datetime", new SimpleDateFormat("M/d/y").format(DateUtil.today().minusDays(2).toDate()));
         }});
 
         assertEquals(1, xformResponse.getSuccessCount());

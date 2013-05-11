@@ -40,7 +40,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("registered", "Y");
             put("motechId", patientId);
             put("serialNumber", serialNumber);
-            put("visitDate", visitDate.toString(forPattern("M/d/y H:m:s")));
+            put("visitDate", visitDate.toString(forPattern("M/d/y")));
             put("newCase", "Y");
             put("newPatient", "Y");
             put("diagnosis", "64");
@@ -88,12 +88,12 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
             put("serialNumber", serialNumber);
-            put("visitDate", visitDate.toString(forPattern("M/d/y H:m:s")));
+            put("visitDate", visitDate.toString(forPattern("M/d/y")));
             put("registered", "N");
-            put("dateOfBirth", dateOfBirth.toString(forPattern("M/d/y H:m:s")));
+            put("dateOfBirth", dateOfBirth.toString(forPattern("M/d/y")));
             put("insured", "Y");
             put("nhis", nhis);
-            put("nhisExpires", nhisExpires.toString(forPattern("M/d/y H:m:s")));
+            put("nhisExpires", nhisExpires.toString(forPattern("M/d/y")));
             put("newCase", "Y");
             put("newPatient", "Y");
             put("diagnosis", "78");
@@ -117,7 +117,7 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         assertEquals(1, response.getErrors().size());
 
         //If the same form gets updated again, but with the visit date in a different month then it should pass
-        data.put("visitDate", visitDate.minusDays(50).toString(forPattern("M/d/y H:m:s")));
+        data.put("visitDate", visitDate.minusDays(50).toString(forPattern("M/d/y")));
         response = XformHttpClient.execute("http://localhost:8080/ghana-national-web/formupload",
                 "NurseDataEntry", XformHttpClient.XFormParser.parse("out-patient-visit-template.xml", data));
 
@@ -140,12 +140,12 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
             put("serialNumber", serialNumber);
-            put("visitDate", visitDate.toString(forPattern("M/d/y H:m:s")));
+            put("visitDate", visitDate.toString(forPattern("M/d/y")));
             put("registered", "N");
-            put("dateOfBirth", dateOfBirth.toString(forPattern("M/d/y H:m:s")));
+            put("dateOfBirth", dateOfBirth.toString(forPattern("M/d/y")));
             put("insured", "Y");
             put("nhis", nhis);
-            put("nhisExpires", nhisExpires.toString(forPattern("M/d/y H:m:s")));
+            put("nhisExpires", nhisExpires.toString(forPattern("M/d/y")));
             put("newCase", "Y");
             put("newPatient", "Y");
             put("diagnosis", "77");
@@ -175,9 +175,9 @@ public class OutPatientVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("facilityId", facilityId);
             put("registrantType", TestPatient.PATIENT_TYPE.PREGNANT_MOTHER.toString());
             put("serialNumber", serialNumber);
-            put("visitDate", visitDate.toString(forPattern("M/d/y H:m:s")));
+            put("visitDate", visitDate.toString(forPattern("M/d/y")));
             put("registered", "Y");
-            put("dateOfBirth", dateOfBirth.toString(forPattern("M/d/y H:m:s")));
+            put("dateOfBirth", dateOfBirth.toString(forPattern("M/d/y")));
             put("insured", "Y");
             put("nhis", "");
             put("nhisExpires", "");
