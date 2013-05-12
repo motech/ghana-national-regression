@@ -34,6 +34,7 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 @ContextConfiguration(locations = {"classpath:/applicationContext-functional-tests.xml"})
 public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
+
     @Test
     public void shouldUploadPregnancyTerminationFormSuccessfully() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
