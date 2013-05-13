@@ -39,150 +39,6 @@ public class TestANCEnrollment implements CareEnrollment {
     private String facility;
     private String country;
 
-    public String LastHbLevels() {
-        return lastHbLevels;
-    }
-
-    public TestANCEnrollment withLastHbLevels(String lastHbLevels) {
-        this.lastHbLevels = lastHbLevels;
-        return this;
-    }
-
-    public String LastMotherVitaminA() {
-        return lastMotherVitaminA;
-    }
-
-    public TestANCEnrollment withLastMotherVitaminA(String lastMotherVitaminA) {
-        this.lastMotherVitaminA = lastMotherVitaminA;
-        return this;
-    }
-
-    public String LastIronOrFolate() {
-        return lastIronOrFolate;
-    }
-
-    public TestANCEnrollment withLastIronOrFolate(String lastIronOrFolate) {
-        this.lastIronOrFolate = lastIronOrFolate;
-        return this;
-    }
-
-    public String LastSyphilis() {
-        return lastSyphilis;
-    }
-
-    public TestANCEnrollment withLastSyphilis(String lastSyphilis) {
-        this.lastSyphilis = lastSyphilis;
-        return this;
-    }
-
-    public String LastMalaria() {
-        return lastMalaria;
-    }
-
-    public TestANCEnrollment withLastMalaria(String lastMalaria) {
-        this.lastMalaria = lastMalaria;
-        return this;
-    }
-
-    public String LastDiarrhea() {
-        return lastDiarrhea;
-    }
-
-    public TestANCEnrollment withLastDiarrhea(String lastDiarrhea) {
-        this.lastDiarrhea = lastDiarrhea;
-        return this;
-    }
-
-    public String LastPnuemonia() {
-        return lastPnuemonia;
-    }
-
-    public TestANCEnrollment withLastPnuemonia(String lastPnuemonia) {
-        this.lastPnuemonia = lastPnuemonia;
-        return this;
-    }
-
-    //ANC CARE OBSERVATIONS
-    private String lastHbLevels;
-    private String lastMotherVitaminA;
-    private String lastIronOrFolate;
-    private String lastSyphilis;
-    private String lastMalaria;
-    private String lastDiarrhea;
-    private String lastPnuemonia;
-    private LocalDate lastHbDate;
-    private LocalDate lastMotherVitaminADate;
-    private LocalDate lastIronOrFolateDate;
-    private LocalDate lastSyphilisDate;
-    private LocalDate lastMalariaDate;
-    private LocalDate lastDiarrheaDate;
-    private LocalDate lastPnuemoniaDate;
-
-    public LocalDate LastHbDate() {
-        return lastHbDate;
-    }
-
-    public TestANCEnrollment withLastHbDate(LocalDate lastHbDate) {
-        this.lastHbDate = lastHbDate;
-        return  this;
-    }
-
-    public LocalDate LastMotherVitaminADate() {
-        return lastMotherVitaminADate;
-    }
-
-    public TestANCEnrollment withLastMotherVitaminADate(LocalDate lastMotherVitaminADate) {
-        this.lastMotherVitaminADate = lastMotherVitaminADate;
-        return this;
-    }
-
-    public LocalDate LastIronOrFolateDate() {
-        return lastIronOrFolateDate;
-    }
-
-    public TestANCEnrollment withLastIronOrFolateDate(LocalDate lastIronOrFolateDate) {
-        this.lastIronOrFolateDate = lastIronOrFolateDate;
-        return this;
-    }
-
-    public LocalDate LastSyphilisDate() {
-        return lastSyphilisDate;
-    }
-
-    public TestANCEnrollment withLastSyphilisDate(LocalDate lastSyphilisDate) {
-        this.lastSyphilisDate = lastSyphilisDate;
-        return this;
-    }
-
-    public LocalDate LastMalariaDate() {
-        return lastMalariaDate;
-    }
-
-    public TestANCEnrollment withLastMalariaDate(LocalDate lastMalariaDate) {
-        this.lastMalariaDate = lastMalariaDate;
-        return this;
-    }
-
-    public LocalDate LastDiarrheaDate() {
-        return lastDiarrheaDate;
-    }
-
-    public TestANCEnrollment withLastDiarrheaDate(LocalDate lastDiarrheaDate) {
-        this.lastDiarrheaDate = lastDiarrheaDate;
-        return  this;
-    }
-
-    public LocalDate LastPnuemoniaDate() {
-        return lastPnuemoniaDate;
-    }
-
-    public TestANCEnrollment withLastPnuemoniaDate(LocalDate lastPnuemoniaDate) {
-        this.lastPnuemoniaDate = lastPnuemoniaDate;
-        return this;
-    }
-
-
-
     private TestANCEnrollment(){}
 
     public static TestANCEnrollment create() {
@@ -214,25 +70,8 @@ public class TestANCEnrollment implements CareEnrollment {
         this.addCareHistory = Arrays.asList(ANCCareHistory.values());
         this.lastIPT = "1";
         this.lastTT = "1";
-
-        this.lastHbLevels = "14";
-        this.lastMotherVitaminA = "1";
-        this.lastIronOrFolate = "1";
-        this.lastSyphilis = "1";
-        this.lastMalaria = "1";
-        this.lastDiarrhea = "1";
-        this.lastPnuemonia = "0";
-
         this.lastIPTDate = new LocalDate(2011, 2, 3);
         this.lastTTDate = new LocalDate(2011, 2, 4);
-
-        this.lastHbDate = new LocalDate(2011, 2, 3);
-        this.lastMotherVitaminADate = new LocalDate(2011, 2, 3);
-        this.lastIronOrFolateDate = new LocalDate(2011, 2, 3);
-        this.lastSyphilisDate = new LocalDate(2011, 2, 3);
-        this.lastMalariaDate = new LocalDate(2011, 2, 3);
-        this.lastDiarrheaDate = new LocalDate(2011, 2, 3);
-        this.lastPnuemoniaDate = new LocalDate(2011, 2, 3);
         return this;
     }
 
@@ -253,27 +92,9 @@ public class TestANCEnrollment implements CareEnrollment {
             put("addCareHistory", "IPT_SP,TT");
             put("lastIPT", lastIPT);
             put("lastTT", lastTT);
-
-            put("lastHbLevels", lastHbLevels);
-            put("lastMotherVitaminA", lastMotherVitaminA);
-            put("lastIronOrFolate", lastIronOrFolate);
-            put("lastSyphilis", lastSyphilis);
-            put("lastMalaria", lastMalaria);
-            put("lastDiarrhea",lastDiarrhea);
-            put("lastPnuemonia", lastPnuemonia);
-
             put("lastIPTDate", safe(lastIPTDate));
             put("lastTTDate", safe(lastTTDate));
-            put("lastHbDate", safe(lastHbDate));
-            put("lastMotherVitaminADate", safe(lastMotherVitaminADate));
-            put("lastIronOrFolateDate", safe(lastIronOrFolateDate));
-            put("lastSyphilisDate", safe(lastSyphilisDate));
-            put("lastMalariaDate", safe(lastMalariaDate));
-            put("lastDiarrheaDate", safe(lastDiarrheaDate));
-            put("lastPnuemoniaDate", safe(lastPnuemoniaDate));
-
             put("serialNumber", serialNumber);
-
         }};
     }
 
