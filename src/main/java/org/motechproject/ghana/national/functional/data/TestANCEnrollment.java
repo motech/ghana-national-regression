@@ -296,7 +296,7 @@ public class TestANCEnrollment implements CareEnrollment {
         updateFieldName(enrollmentDetails, "addCareHistory", "addMotherHistory");
         updateFieldName(enrollmentDetails, "serialNumber", "ancRegNumber");
         updateFieldName(enrollmentDetails, "estDeliveryDate", "expDeliveryDate");
-        updateFieldByNameAndValue(enrollmentDetails, "registrationDate", "date", patient.getRegistrationDate().toString(DateTimeFormat.forPattern("M/d/y")));
+        updateFieldByNameAndValue(enrollmentDetails, "registrationDate", "date", patient.getRegistrationDate().toString(DateTimeFormat.forPattern("M/d/y H:m:s")));
         enrollmentDetails.put("staffId", patient.staffId());
         enrollmentDetails.put("facilityId", patient.facilityId());
         enrollmentDetails.put("motechId", patient.motechId());
@@ -312,7 +312,7 @@ public class TestANCEnrollment implements CareEnrollment {
     }
 
     private String safe(LocalDate date) {
-        return nullSafeToString(date, "M/d/y");
+        return nullSafeToString(date, "M/d/y H:m:s");
 
     }
 

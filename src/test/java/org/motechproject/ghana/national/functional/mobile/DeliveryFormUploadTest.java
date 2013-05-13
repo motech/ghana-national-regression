@@ -52,7 +52,7 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("staffId", staffId);
             put("facilityId", testPatient.facilityId());
             put("motechId", motechId);
-            put("date", new SimpleDateFormat("M/d/y").format(today().minusDays(2).toDate()));
+            put("date", new SimpleDateFormat("M/d/y H:m:s").format(today().minusDays(2).toDate()));
             put("mode", ChildDeliveryMode.NORMAL.name());
             put("outcome", ChildDeliveryOutcome.SINGLETON.name());
             put("maleInvolved", "Y");
@@ -119,7 +119,7 @@ public class DeliveryFormUploadTest extends OpenMRSAwareFunctionalTest {
             put("staffId", staffId);
             put("facilityId", patient.facilityId());
             put("motechId", patientId);
-            put("date", new SimpleDateFormat("M/d/y").format(today().minusDays(2).toDate()));
+            put("date", new SimpleDateFormat("M/d/y H:m:s").format(today().minusDays(2).toDate()));
             put("mode", ChildDeliveryMode.NORMAL.name());
             put("outcome", ChildDeliveryOutcome.SINGLETON.name());
             put("maleInvolved", "Y");

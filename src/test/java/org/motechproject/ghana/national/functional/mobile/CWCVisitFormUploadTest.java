@@ -82,7 +82,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.cwcVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
-            put("date", visitDate.toString(forPattern("M/d/y")));
+            put("date", visitDate.toString(forPattern("M/d/y H:m:s")));
             put("motechId", motechId);
             put("visitor", "N");
             put("serialNumber", "1234567");
@@ -143,7 +143,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.cwcVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
-            put("date", visitDate.toString(forPattern("M/d/y")));
+            put("date", visitDate.toString(forPattern("M/d/y H:m:s")));
             put("visitor", "Y");
             put("serialNumber", "1234567");
             put("immunizations", "BCG,OPV,YF,DEWORMER,ROTAVIRUS,PNEUMOCOCCAL");
@@ -195,7 +195,7 @@ public class CWCVisitFormUploadTest extends OpenMRSAwareFunctionalTest {
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.cwcVisitForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", facilityId);
-            put("date", visitDate.toString(forPattern("M/d/y")));
+            put("date", visitDate.toString(forPattern("M/d/y H:m:s")));
             put("motechId", motechId);
             put("serialNumber", "1234567");
             put("immunizations", "NONGIVEN");

@@ -70,7 +70,7 @@ public class TestPatient {
             put("firstName", firstName);
             put("middleName", middleName);
             put("lastName", lastName);
-            put("dateOfBirth", dateOfBirth.toString(DateTimeFormat.forPattern("M/d/y")));
+            put("dateOfBirth", dateOfBirth.toString(DateTimeFormat.forPattern("M/d/y H:m:s")));
             put("sex", genderCode());
             put("insured", booleanCode(insured));
             put("region", region);
@@ -80,7 +80,7 @@ public class TestPatient {
             put("address", address);
             put("registrantType", patientType.name());
             put("estimatedBirthDate", booleanCode(estimatedDateOfBirth));
-            put("date", registrationDate.toString(DateTimeFormat.forPattern("M/d/y")));
+            put("date", registrationDate.toString(DateTimeFormat.forPattern("M/d/y H:m:s")));
             put("staffId", staffId);
             put("motherMotechId", motherMotechId);
             put("serialNumber", serialNumber);

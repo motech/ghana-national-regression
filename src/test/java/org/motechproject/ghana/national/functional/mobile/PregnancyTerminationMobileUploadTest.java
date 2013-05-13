@@ -60,7 +60,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("motechId", patientId);
-            put("date", terminationDate.toString(forPattern("M/d/y")));
+            put("date", terminationDate.toString(forPattern("M/d/y H:m:s")));
             put("terminationType", "1");
             put("procedure", "2");
             put("complications", "1,2");
@@ -120,7 +120,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
             put("staffId", staffId);
             put("facilityId", facilityId);
             put("motechId", patientId);
-            put("date", terminationDate.toString(forPattern("M/d/y")));
+            put("date", terminationDate.toString(forPattern("M/d/y H:m:s")));
             put("terminationType", "1");
             put("procedure", "2");
             put("complications", "1,2");
