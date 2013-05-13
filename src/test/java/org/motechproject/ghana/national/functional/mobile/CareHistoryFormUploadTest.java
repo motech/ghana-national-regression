@@ -58,7 +58,6 @@ public class CareHistoryFormUploadTest extends OpenMRSAwareFunctionalTest {
         final String iptDate = new SimpleDateFormat("M/d/y").format(DateUtil.newDate(2011, 12, 15).toDate());
         final String date = new SimpleDateFormat("M/d/y").format(DateUtil.newDate(2012, 1, 15).toDate());
 
-
         XformHttpClient.XformResponse response = mobile.upload(MobileForm.careHistoryForm(), new HashMap<String, String>() {{
             put("staffId", staffId);
             put("facilityId", "13212");
