@@ -40,7 +40,7 @@ public class PNCBabyFormUploadTest extends OpenMRSAwareFunctionalTest {
         final PatientPage patientPage = browser.toCreatePatient(homePage);
         patientPage.create(testPatient);
 
-        final String visitDate = new SimpleDateFormat("M/d/y H:m:s").format(new Date());
+        final String visitDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
         final String patientId = patientPage.motechId();
 
         final XformHttpClient.XformResponse xformResponse = mobile.upload(MobileForm.pncChildForm(), new HashMap<String, String>() {{
