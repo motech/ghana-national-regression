@@ -44,7 +44,7 @@ public abstract class OpenMRSAwareFunctionalTest extends FunctionalTest {
     }
 
     protected String getParsedDate(String estimatedDeliveryDate) throws ParseException {
-        return new SimpleDateFormat("M/d/y").format(new SimpleDateFormat("M/d/y").parse(estimatedDeliveryDate));
+        return new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(new SimpleDateFormat("dd/MM/yyyy").parse(estimatedDeliveryDate));
     }
 
     @AfterMethod

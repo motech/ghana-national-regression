@@ -145,7 +145,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("M/d/y").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
@@ -241,7 +241,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("M/d/y").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
@@ -325,7 +325,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("M/d/y").format(estimatedDateOfDelivery.toDate())),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", new SimpleDateFormat("dd MMMM yyyy HH:mm:ss z").format(estimatedDateOfDelivery.toDate())),
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
