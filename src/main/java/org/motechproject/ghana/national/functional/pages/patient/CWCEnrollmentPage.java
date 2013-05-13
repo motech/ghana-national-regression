@@ -430,7 +430,7 @@ public class CWCEnrollmentPage extends HomePage {
         assertEquals(cwcEnrollmentDetails.getRegion(), getRegion());
         assertEquals(cwcEnrollmentDetails.getDistrict(), getDistrict());
         assertEquals(cwcEnrollmentDetails.getSubDistrict(), getSubDistrict());
-        assertEquals(cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("M/d/y")), getRegistrationDate());
+        assertEquals(cwcEnrollmentDetails.getRegistrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")), getRegistrationDate());
         assertEquals(cwcEnrollmentDetails.getFacility(), getFacility());
         assertThat(getBcgDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastBcgDate())));
         assertThat(getLastIPTiDate(), is(nullSafeDateFormatting(cwcEnrollmentDetails.getLastIPTiDate())));
@@ -447,7 +447,7 @@ public class CWCEnrollmentPage extends HomePage {
     }
 
     public String nullSafeDateFormatting(LocalDate date) {
-        return date == null ? "" : date.toString(DateTimeFormat.forPattern("M/d/y"));
+        return date == null ? "" : date.toString(DateTimeFormat.forPattern("dd/MM/yyyy"));
     }
 
     public String nullSafeInteger(String value) {

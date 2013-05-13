@@ -273,7 +273,7 @@ public class PatientPage extends HomePage {
         assertThat(valueOf(firstName), is(equalTo(patient.firstName())));
         assertThat(valueOf(middleName), is(equalTo(patient.middleName())));
         assertThat(valueOf(lastName), is(equalTo(patient.lastName())));
-        assertThat(valueOf(dateOfBirth), is(equalTo(patient.dateOfBirth().toString(DateTimeFormat.forPattern("M/d/y")))));
+        assertThat(valueOf(dateOfBirth), is(equalTo(patient.dateOfBirth().toString(DateTimeFormat.forPattern("dd/MM/yyyy")))));
         assertThat(getEstimatedDateOfBirth(), is(equalTo(patient.estimatedDateOfBirth())));
         assertThat(getGenderCode(), is(equalTo(patient.genderCode())));
         assertThat(isInsured(), is(equalTo(patient.insured())));
@@ -288,7 +288,7 @@ public class PatientPage extends HomePage {
         assertThat(valueOf(firstName), is(equalTo(patient.firstName())));
         assertThat(valueOf(middleName), is(equalTo(patient.middleName())));
         assertThat(valueOf(lastName), is(equalTo(patient.lastName())));
-        assertThat(valueOf(dateOfBirth), is(equalTo(patient.dateOfBirth().toString(DateTimeFormat.forPattern("M/d/y")))));
+        assertThat(valueOf(dateOfBirth), is(equalTo(patient.dateOfBirth().toString(DateTimeFormat.forPattern("dd/MM/yyyy")))));
         assertThat(getEstimatedDateOfBirth(), is(equalTo(patient.estimatedDateOfBirth())));
         assertThat(getGenderCode(), is(equalTo(patient.genderCode())));
         assertThat(isInsured(), is(equalTo(patient.insured())));

@@ -385,15 +385,15 @@ public class ANCEnrollmentPage extends HomePage {
         assertEquals(getRegion(), ancEnrollment.region());
         assertEquals(getDistrict(), ancEnrollment.district());
         assertEquals(getSubDistrict(), ancEnrollment.subDistrict());
-        assertEquals(getRegistrationDate(), ancEnrollment.registrationDate().toString(DateTimeFormat.forPattern("M/d/y")));
+        assertEquals(getRegistrationDate(), ancEnrollment.registrationDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
         assertEquals(getFacility(), ancEnrollment.facility());
         assertEquals(getHeight(), ancEnrollment.height());
         assertEquals(getGravida(), ancEnrollment.gravida());
         assertEquals(getParity(), ancEnrollment.parity());
-        assertEquals(getEstimatedDateOfDelivery(), ancEnrollment.estimatedDateOfDelivery().toString(DateTimeFormat.forPattern("M/d/y")));
-        assertEquals(getLastTTDate(), ancEnrollment.lastTTDate().toString(DateTimeFormat.forPattern("M/d/y")));
+        assertEquals(getEstimatedDateOfDelivery(), ancEnrollment.estimatedDateOfDelivery().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
+        assertEquals(getLastTTDate(), ancEnrollment.lastTTDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
         assertEquals(getLastTT1(), ancEnrollment.lastTT());
-        assertEquals(getLastIPTDate(), ancEnrollment.lastIPTDate().toString(DateTimeFormat.forPattern("M/d/y")));
+        assertEquals(getLastIPTDate(), ancEnrollment.lastIPTDate().toString(DateTimeFormat.forPattern("dd/MM/yyyy")));
         assertEquals(getLastIPT1(), ancEnrollment.lastIPT());
 
 
