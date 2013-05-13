@@ -35,7 +35,7 @@ import static org.joda.time.format.DateTimeFormat.forPattern;
 public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctionalTest {
 
 
-    @Test
+   /* @Test
     public void shouldUploadPregnancyTerminationFormSuccessfully() throws Exception {
         DataGenerator dataGenerator = new DataGenerator();
         final String staffId = staffGenerator.createStaff(browser, homePage);
@@ -89,7 +89,7 @@ public class PregnancyTerminationMobileUploadTest extends OpenMRSAwareFunctional
                 new OpenMRSObservationVO("COMMENTS", "blah blah"),
                 new OpenMRSObservationVO("TERMINATION TYPE", "1.0")
         ));
-    }
+    }     */
 
     @Test
     public void shouldNotUnenrollFromMobileMidwifeOnlyIfMotherIsAlive_IVRService() throws Exception {

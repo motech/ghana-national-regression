@@ -394,7 +394,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         ));
     }
 
-    @Test
+   /* @Test
     public void shouldCreateSchedulesForPatientTypeOtherWithANCHistory(){
         LocalDate registrationDate = today();
         String staffId = staffGenerator.createStaff(browser, homePage);
@@ -419,7 +419,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
                 today().plusWeeks(1),TTVaccineDosage.TT2.getScheduleMilestoneName());
         ScheduleHelper.assertAlertDate(scheduleTracker.firstAlertScheduledFor(openMRSId,ScheduleNames.ANC_IPT_VACCINE.getName()).getAlertAsLocalDate(), Utility.getNextOf(IPTDose.byValue(testANCEnrollment.lastIPT())).name(),
                 today().plusWeeks(1),IPTDose.SP2.name());
-    }
+    }   */
 
     private PatientEditPage toPatientEditPage(TestPatient testPatient) {
         SearchPatientPage searchPatientPage = browser.toSearchPatient();
