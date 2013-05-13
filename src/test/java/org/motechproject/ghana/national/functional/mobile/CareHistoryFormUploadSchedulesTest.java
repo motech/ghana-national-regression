@@ -175,8 +175,7 @@ public class CareHistoryFormUploadSchedulesTest extends OpenMRSAwareFunctionalTe
 
         TestCWCEnrollment cwcEnrollmentDetails = TestCWCEnrollment.createWithoutHistory();
 
-        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration
-                <TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
+        TestClientRegistration<TestCWCEnrollment> testClientRegistration = new TestClientRegistration<TestCWCEnrollment>(patient, cwcEnrollmentDetails, mmEnrollmentDetails);
 
         mobile.upload(MobileForm.registerCWCForm(), testClientRegistration.withProgramEnrollmentThroughMobile());
 

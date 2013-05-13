@@ -159,6 +159,6 @@ public class TestCareHistory {
 
 
     private String safe(LocalDate date) {
-        return nullSafeToString(date, "M/d/y H:m:s");
+        return nullSafeToString(date, "yyyy-MM-dd");
     }
 }

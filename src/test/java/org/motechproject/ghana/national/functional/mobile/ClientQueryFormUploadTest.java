@@ -135,14 +135,14 @@ public class ClientQueryFormUploadTest extends LoggedInUserFunctionalTest {
             put("gravida", "1");
             put("parity", "1");
             put("height", "61");
-            put("estDeliveryDate", eddDueIn14Weeks.toString("M/d/y H:m:s"));
-            put("date", today().toString("M/d/y H:m:s"));
+            put("estDeliveryDate", eddDueIn14Weeks.toString("yyyy-MM-dd"));
+            put("date", today().toString("yyyy-MM-dd"));
             put("deliveryDateConfirmed", "Y");
             put("regDateToday", "TODAY");
             put("addHistory", "1");
             put("addCareHistory","IPT_SP");
             put("lastIPT", "1");
-            put("lastIPTDate",today().minusWeeks(4).toString("M/d/y H:m:s"));
+            put("lastIPTDate",today().minusWeeks(4).toString("yyyy-MM-dd"));
             put("ancRegNumber", "123ABC");
         }});
 
