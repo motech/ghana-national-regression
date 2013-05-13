@@ -376,7 +376,7 @@ public class RegisterANCMobileUploadTest extends OpenMRSAwareFunctionalTest {
         OpenMRSEncounterPage openMRSEncounterPage = openMRSBrowser.toOpenMRSEncounterPage(encounterId);
         openMRSEncounterPage.displaying(asList(
                 new OpenMRSObservationVO("PREGNANCY STATUS", "true"),
-                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03-02-2012"),
+                new OpenMRSObservationVO("ESTIMATED DATE OF CONFINEMENT", "03 February 2012 00:00:00 IST"),
                 new OpenMRSObservationVO("DATE OF CONFINEMENT CONFIRMED", "true")
         ));
 
