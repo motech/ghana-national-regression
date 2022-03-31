@@ -22,7 +22,7 @@
     </repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>3.1.0.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
         <OPENMRS_PORT>8080</OPENMRS_PORT>
         <motech-platform.version>0.12-GHANA-NATIONAL-SNAPSHOT</motech-platform.version>
         <ghana-national.version>1.0-SNAPSHOT</ghana-national.version>
